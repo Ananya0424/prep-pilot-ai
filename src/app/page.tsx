@@ -66,11 +66,11 @@ export default function LandingPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 lg:px-10 py-2 flex items-center justify-center relative z-10">
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-center">
+      <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 lg:px-10 pt-6 lg:pt-8 pb-12 flex items-start relative z-10">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-start mt-2 lg:mt-4">
           
           {/* Left Side: Hero Content */}
-          <div className="lg:col-span-7 flex flex-col justify-center">
+          <div className="lg:col-span-7 flex flex-col">
             
             <div className="inline-flex items-center gap-1.5 mb-3 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 w-fit">
               <Sparkles className="w-3 h-3 text-brand-600" />
