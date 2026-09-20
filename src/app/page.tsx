@@ -39,10 +39,9 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80 flex flex-col justify-center">
-      
-      {/* Richer Background Decor to prevent "plain" look */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+    <>
+      {/* Edge-to-Edge Background */}
+      <div className="fixed inset-0 z-[-1] bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80 overflow-hidden pointer-events-none">
         {/* Large ambient colored blobs */}
         <div className="absolute -top-20 -left-20 w-[600px] h-[600px] bg-indigo-200/40 rounded-full mix-blend-multiply filter blur-[100px] opacity-70 animate-blob" />
         <div className="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-purple-200/40 rounded-full mix-blend-multiply filter blur-[100px] opacity-70 animate-blob" style={{ animationDelay: '2s' }} />
@@ -55,7 +54,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.25] mix-blend-overlay"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 flex items-center justify-center h-full">
+      <div className="w-full flex flex-col justify-center min-h-[calc(100vh-12rem)] relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-4 items-center w-full">
           
           {/* Left Side: Auth Form */}
@@ -146,9 +145,9 @@ export default function LandingPage() {
           </div>
 
           {/* Right Side: Premium Workflow Visualization - Scaled to fit viewport */}
-          <div className="relative w-full h-[500px] flex items-center justify-center lg:justify-end hidden md:flex scale-[0.85] xl:scale-95 origin-right">
+          <div className="relative w-full h-[500px] flex items-center justify-center lg:justify-end hidden md:flex">
             
-            <div className="relative w-full max-w-[480px] h-full perspective-[1200px]">
+            <div className="relative w-[480px] h-full perspective-[1200px] scale-[0.75] md:scale-[0.80] lg:scale-[0.85] xl:scale-95 origin-center lg:origin-right">
               
               {/* Connector SVG Background */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible" viewBox="0 0 500 500">
@@ -277,6 +276,6 @@ export default function LandingPage() {
 
         </div>
       </div>
-    </div>
+    </>
   );
 }
