@@ -1,0 +1,14 @@
+[
+  {
+    "id": "role-01",
+    "jd": "Senior Full-Stack Engineer\nWe are looking for a Senior Full-Stack Engineer with React and Node.js experience.",
+    "company_url": "https://posthog.com",
+    "days": 5
+  },
+  {
+    "id": "role-02",
+    "jd": "Backend Engineer\nBackend Engineer with Go, Node.js, microservices, and MongoDB experience.",
+    "company_url": "https://about.gitlab.com",
+    "days": 3
+  }
+]

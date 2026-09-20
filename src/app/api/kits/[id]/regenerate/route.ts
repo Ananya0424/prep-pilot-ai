@@ -1,19 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getSessionUser } from '@/lib/auth';
 import { connectToDatabase } from '@/lib/db';
 import { Kit } from '@/models/Kit';
 import { generateCompanyBrief } from '@/lib/pipeline/briefGenerator';
 import { generateQuestionsAndFlashcards } from '@/lib/pipeline/questionGenerator';
 import { buildDeterministicSchedule } from '@/lib/pipeline/scheduleAllocator';
 import { PrepKit, Question } from '@/types/kit';
+import { memoryKits } from '@/lib/memoryStore';
 
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   try {
-    const session = await getSessionUser();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { section, currentKit } = await req.json();
     if (!section || !currentKit) {
       return NextResponse.json({ error: 'section and currentKit are required' }, { status: 400 });
@@ -64,12 +59,23 @@ export async function POST(req: Request, { params }: { params: { id: string } })
       );
     }
 
-    // Persist updated kit to MongoDB if params.id exists
-    await connectToDatabase();
-    await Kit.findOneAndUpdate(
-      { _id: params.id, userId: session.userId },
-      { kit: updatedKit, updatedAt: new Date() }
-    );
+    // Update memory cache
+    const memKit = memoryKits.get(params.id);
+    if (memKit) {
+      memKit.kit = updatedKit;
+      memKit.updatedAt = new Date().toISOString();
+      memoryKits.set(params.id, memKit);
+    }
+
+    // Persist to MongoDB if connected
+    const conn = await connectToDatabase();
+    if (conn) {
+      try {
+        await Kit.findByIdAndUpdate(params.id, { kit: updatedKit, updatedAt: new Date() });
+      } catch (dbErr) {
+        // Ignore DB update error
+      }
+    }
 
     return NextResponse.json({ kit: updatedKit });
   } catch (err: any) {
