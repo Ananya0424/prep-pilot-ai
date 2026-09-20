@@ -171,7 +171,7 @@ export default function KitBuilderPage() {
   if (loading) {
     return (
       <div className="p-16 text-center text-slate-400 space-y-3">
-        <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
+        <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
         <p className="text-sm">Loading interview kit...</p>
       </div>
     );
@@ -181,7 +181,7 @@ export default function KitBuilderPage() {
     return (
       <div className="p-12 text-center text-slate-400">
         <p className="text-lg">Kit not found.</p>
-        <Link href="/dashboard" className="text-sky-400 underline mt-2 inline-block text-sm">
+        <Link href="/dashboard" className="text-brand-400 underline mt-2 inline-block text-sm">
           Return to Dashboard
         </Link>
       </div>
@@ -254,7 +254,7 @@ export default function KitBuilderPage() {
         <button
           onClick={() => setActiveTab('questions')}
           className={`pb-3 px-2 text-sm font-semibold flex items-center space-x-2 border-b-2 transition-colors ${
-            activeTab === 'questions' ? 'border-sky-500 text-sky-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+            activeTab === 'questions' ? 'border-brand-500 text-brand-400' : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <HelpCircle className="w-4 h-4" />
@@ -264,7 +264,7 @@ export default function KitBuilderPage() {
         <button
           onClick={() => setActiveTab('flashcards')}
           className={`pb-3 px-2 text-sm font-semibold flex items-center space-x-2 border-b-2 transition-colors ${
-            activeTab === 'flashcards' ? 'border-sky-500 text-sky-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+            activeTab === 'flashcards' ? 'border-brand-500 text-brand-400' : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <BookOpen className="w-4 h-4" />
@@ -274,7 +274,7 @@ export default function KitBuilderPage() {
         <button
           onClick={() => setActiveTab('schedule')}
           className={`pb-3 px-2 text-sm font-semibold flex items-center space-x-2 border-b-2 transition-colors ${
-            activeTab === 'schedule' ? 'border-sky-500 text-sky-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+            activeTab === 'schedule' ? 'border-brand-500 text-brand-400' : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <Calendar className="w-4 h-4" />
@@ -284,7 +284,7 @@ export default function KitBuilderPage() {
         <button
           onClick={() => setActiveTab('brief')}
           className={`pb-3 px-2 text-sm font-semibold flex items-center space-x-2 border-b-2 transition-colors ${
-            activeTab === 'brief' ? 'border-sky-500 text-sky-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+            activeTab === 'brief' ? 'border-brand-500 text-brand-400' : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <FileText className="w-4 h-4" />

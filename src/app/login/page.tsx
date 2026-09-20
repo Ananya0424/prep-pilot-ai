@@ -55,7 +55,7 @@ export default function LoginPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:border-sky-500 text-sm"
+            className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:border-brand-500 text-sm"
             placeholder="candidate@example.com"
           />
         </div>
@@ -67,7 +67,7 @@ export default function LoginPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:border-sky-500 text-sm"
+            className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:border-brand-500 text-sm"
             placeholder="••••••••"
           />
         </div>
@@ -75,7 +75,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-lg shadow-lg shadow-sky-600/30 transition-all disabled:opacity-50 text-sm"
+          className="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-lg shadow-lg shadow-brand-600/30 transition-all disabled:opacity-50 text-sm"
         >
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
@@ -83,7 +83,7 @@ export default function LoginPage() {
 
       <p className="text-xs text-slate-400 text-center mt-6">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="text-sky-400 hover:underline">
+        <Link href="/register" className="text-brand-400 hover:underline">
           Register here
         </Link>
       </p>
