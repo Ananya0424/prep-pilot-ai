@@ -1,41 +1,84 @@
 {
   "version": "1.0",
-  "generated_at": "2026-09-20T07:14:29.167Z",
+  "generated_at": "2026-09-20T07:33:12.740Z",
   "kits": [
     {
       "id": "case-01",
       "status": "ok",
       "kit": {
         "source": {
-          "company": "Example",
+          "company": "Example Domain",
           "company_url": "https://example.com",
-          "role": "Job Position",
+          "role": "Senior Full-Stack Engineer (React + Node.js)",
           "location": "Remote / Unspecified",
           "jd_chars": 320,
-          "researched_at": "2026-09-20T07:14:19.487Z",
+          "researched_at": "2026-09-20T07:32:50.242Z",
           "pages_used": [
             "https://example.com"
           ]
         },
         "company_brief": {
-          "summary": "Company details gathered from web search.",
-          "what_they_do": "Software & Technology services.",
+          "summary": "No actual corporate or hiring information is available for this website. It is a standard placeholder domain reserved for illustrative purposes and technical documentation.",
+          "what_they_do": "Serves as a generic placeholder domain for use in documentation and examples without requiring prior permission.",
           "sources": [
             "https://example.com"
           ]
         },
         "role": {
-          "title": "Job Position",
-          "seniority": "Unspecified",
+          "title": "Senior Full-Stack Engineer (React + Node.js)",
+          "seniority": "Senior",
           "responsibilities": [
-            "General software engineering responsibilities"
+            "Building scalable web applications",
+            "Mentoring junior developers"
           ],
           "requirements": [
             {
               "id": "r1",
-              "text": "Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5",
+              "text": "5+ years of experience building scalable web applications",
               "kind": "technical",
               "priority": "must"
+            },
+            {
+              "id": "r2",
+              "text": "Proficiency in React",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r3",
+              "text": "Proficiency in Node.js",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r4",
+              "text": "Proficiency in MongoDB",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r5",
+              "text": "Experience with system design",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r6",
+              "text": "Experience mentoring junior developers",
+              "kind": "behavioural",
+              "priority": "must"
+            },
+            {
+              "id": "r7",
+              "text": "Experience with GraphQL",
+              "kind": "technical",
+              "priority": "nice"
+            },
+            {
+              "id": "r8",
+              "text": "Experience with Docker",
+              "kind": "technical",
+              "priority": "nice"
             }
           ]
         },
@@ -43,21 +86,113 @@
           {
             "id": "q1",
             "requirement_ids": [
-              "r1"
+              "r2"
             ],
             "category": "technical",
-            "prompt": "Can you describe your experience with Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5?",
-            "answer_outline": "Demonstrate hands-on experience, key challenges faced, and measurable impact related to Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5.",
+            "prompt": "How does React's Virtual DOM diffing algorithm work, and what strategies would you use to optimize performance when rendering large, dynamic datasets?",
+            "answer_outline": "Key points to cover: 1) Explanation of Virtual DOM and the Reconciliation process (React Fiber). 2) Heuristic O(n) diffing algorithm assumptions (element types, key props). 3) Optimization techniques: list virtualization (react-window/react-virtualized), React.memo, useMemo, useCallback, avoiding inline functions in JSX, and pagination/infinite scroll.",
+            "difficulty": 2
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r3",
+              "r4"
+            ],
+            "category": "technical",
+            "prompt": "In a Node.js backend connected to MongoDB, how would you handle a spike in incoming requests to prevent overwhelming the database and causing event loop starvation?",
+            "answer_outline": "Key points to cover: 1) Node.js Event Loop non-blocking I/O characteristics and preventing CPU-heavy tasks on main thread. 2) Using Streams and backpressure to control data flow. 3) MongoDB connection pooling, indexing, and using bulkWrite operations. 4) Implementing rate limiting, message queues (e.g., BullMQ/Redis) to decouple ingestion from persistence, and circuit breakers.",
+            "difficulty": 3
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r1",
+              "r5"
+            ],
+            "category": "system-design",
+            "prompt": "Design a high-throughput, low-latency notification system that sends real-time updates to web clients using WebSockets. How do you scale this across multiple application servers?",
+            "answer_outline": "Key points to cover: 1) Architecture components: Load Balancers, API Gateway, Stateless Application Servers, WebSocket Connection Servers. 2) Handling persistent connections and state across instances using Redis Pub/Sub or Apache Kafka. 3) Fallbacks (Server-Sent Events, Long Polling). 4) Database storage for missed notifications and status tracking. 5) Horizontal scaling, auto-scaling groups, and connection drain strategies.",
+            "difficulty": 3
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r6"
+            ],
+            "category": "behavioural",
+            "prompt": "Describe a scenario where a junior engineer you were mentoring was consistently delivering low-quality code or missing deadlines. How did you handle the situation and help them improve?",
+            "answer_outline": "Key points to cover (using STAR method): 1) Situation: Specific context and the underlying issue identified. 2) Task: Responsibility as a senior developer/mentor to address performance while keeping morale high. 3) Action: Root cause analysis (e.g., unclear requirements, lack of technical knowledge), implementing pairing sessions, setting up structured pull request templates/guidelines, establishing actionable goals. 4) Result: Quantifiable improvement in code quality or velocity and long-term impact on the engineer.",
+            "difficulty": 2
+          },
+          {
+            "id": "q5",
+            "requirement_ids": [
+              "r7"
+            ],
+            "category": "technical",
+            "prompt": "What is the N+1 problem in GraphQL, and how do you resolve it in a Node.js GraphQL service?",
+            "answer_outline": "Key points to cover: 1) Definition: Fetching a parent record and then executing individual database queries for each child record (1 + N queries). 2) Cause: Independent execution of resolver functions. 3) Solution: Using DataLoader to batch multiple individual load requests into a single batch database query within one event loop tick and cache results per request.",
+            "difficulty": 2
+          },
+          {
+            "id": "q6",
+            "requirement_ids": [
+              "r8"
+            ],
+            "category": "technical",
+            "prompt": "How would you design a production-ready multi-stage Dockerfile for a Node.js and React web application to minimize container size and maximize security?",
+            "answer_outline": "Key points to cover: 1) Multi-stage build concept (separate builder stage from final runtime stage). 2) Base images (Alpine or Distroless). 3) Caching npm layers by copying `package.json` and `package-lock.json` before `npm install`. 4) Excluding unnecessary files via `.dockerignore`. 5) Security best practices: non-root user execution, removing build dependencies from final image, scanning for vulnerabilities.",
             "difficulty": 2
           }
         ],
         "flashcards": [
           {
             "id": "f1",
-            "front": "Core concept: Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5",
-            "back": "Essential principles and best practices for Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5.",
+            "front": "What is Reconciliation in React?",
+            "back": "The process through which React updates the DOM by computing the difference (diffing) between the old Virtual DOM and new Virtual DOM trees using a heuristic O(n) algorithm.",
             "requirement_ids": [
-              "r1"
+              "r2"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "What causes Event Loop starvation in Node.js?",
+            "back": "Executing synchronous, CPU-intensive operations on the main thread (e.g., heavy JSON parsing, complex loops), which prevents asynchronous callbacks, I/O events, and timers from running.",
+            "requirement_ids": [
+              "r3"
+            ]
+          },
+          {
+            "id": "f3",
+            "front": "What is a MongoDB Compound Index and when should key order matter?",
+            "back": "An index holding references to multiple fields. Key order matters following the ESR (Equality, Sort, Range) rule: place fields queried by exact equality first, fields used for sorting second, and range queries last.",
+            "requirement_ids": [
+              "r4"
+            ]
+          },
+          {
+            "id": "f4",
+            "front": "How do you scale WebSocket connections across multiple server nodes?",
+            "back": "Use a pub/sub message broker (like Redis Pub/Sub) to broadcast messages across stateless WebSocket server nodes so clients connected to different nodes can communicate.",
+            "requirement_ids": [
+              "r5"
+            ]
+          },
+          {
+            "id": "f5",
+            "front": "How does DataLoader solve the N+1 problem in GraphQL?",
+            "back": "DataLoader collects individual data fetches requested within a single event loop tick, batches them into a single query request to the database/backend, and caches the result for the request duration.",
+            "requirement_ids": [
+              "r7"
+            ]
+          },
+          {
+            "id": "f6",
+            "front": "What is the primary advantage of Docker Multi-Stage Builds?",
+            "back": "It allows using heavy tools/dependencies during the build stage while keeping the final production image lightweight and secure by copying only compiled artifacts to the final stage.",
+            "requirement_ids": [
+              "r8"
             ]
           }
         ],
@@ -68,32 +203,41 @@
               "day": 1,
               "focus": "Day 1: Technical",
               "question_ids": [
+                "q2",
+                "q6"
+              ],
+              "minutes": 75
+            },
+            {
+              "day": 2,
+              "focus": "Day 2: System-design",
+              "question_ids": [
+                "q3"
+              ],
+              "minutes": 45
+            },
+            {
+              "day": 3,
+              "focus": "Day 3: Technical",
+              "question_ids": [
                 "q1"
               ],
               "minutes": 30
             },
             {
-              "day": 2,
-              "focus": "Day 2: General Review & Prep",
-              "question_ids": [],
-              "minutes": 30
-            },
-            {
-              "day": 3,
-              "focus": "Day 3: General Review & Prep",
-              "question_ids": [],
-              "minutes": 30
-            },
-            {
               "day": 4,
-              "focus": "Day 4: General Review & Prep",
-              "question_ids": [],
+              "focus": "Day 4: Behavioural",
+              "question_ids": [
+                "q4"
+              ],
               "minutes": 30
             },
             {
               "day": 5,
-              "focus": "Day 5: General Review & Prep",
-              "question_ids": [],
+              "focus": "Day 5: Technical",
+              "question_ids": [
+                "q5"
+              ],
               "minutes": 30
             }
           ]
@@ -112,10 +256,10 @@
         "source": {
           "company": "Httpbin",
           "company_url": "https://httpbin.org/status/404",
-          "role": "Job Position",
+          "role": "Backend Developer",
           "location": "Remote / Unspecified",
           "jd_chars": 40,
-          "researched_at": "2026-09-20T07:14:29.167Z",
+          "researched_at": "2026-09-20T07:33:12.740Z",
           "pages_used": []
         },
         "company_brief": {
@@ -126,15 +270,13 @@
           ]
         },
         "role": {
-          "title": "Job Position",
+          "title": "Backend Developer",
           "seniority": "Unspecified",
-          "responsibilities": [
-            "General software engineering responsibilities"
-          ],
+          "responsibilities": [],
           "requirements": [
             {
               "id": "r1",
-              "text": "Backend Developer\nNeed a Node developer.",
+              "text": "Experience with Node.js development",
               "kind": "technical",
               "priority": "must"
             }
@@ -147,16 +289,16 @@
               "r1"
             ],
             "category": "technical",
-            "prompt": "Can you describe your experience with Backend Developer\nNeed a Node developer.?",
-            "answer_outline": "Demonstrate hands-on experience, key challenges faced, and measurable impact related to Backend Developer\nNeed a Node developer..",
+            "prompt": "Can you describe your experience with Experience with Node.js development?",
+            "answer_outline": "Demonstrate hands-on experience, key challenges faced, and measurable impact related to Experience with Node.js development.",
             "difficulty": 2
           }
         ],
         "flashcards": [
           {
             "id": "f1",
-            "front": "Core concept: Backend Developer\nNeed a Node developer.",
-            "back": "Essential principles and best practices for Backend Developer\nNeed a Node developer..",
+            "front": "Core concept: Experience with Node.js development",
+            "back": "Essential principles and best practices for Experience with Node.js development.",
             "requirement_ids": [
               "r1"
             ]

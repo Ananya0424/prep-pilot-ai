@@ -45,6 +45,9 @@ export function extractJsonFromResponse(rawText: string): string {
  */
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Active working Gemini model for v1beta
+const GEMINI_MODEL = 'gemini-3.6-flash';
+
 /**
  * Core LLM caller with rate-limit retries (Exponential backoff)
  */
@@ -77,13 +80,12 @@ export async function callLLM(prompt: string, systemPrompt?: string, options: LL
         }
 
         const genAI = new GoogleGenerativeAI(geminiKey);
-        // Use gemini-1.5-flash or gemini-2.5-flash or gemini-pro
+        
         const model = genAI.getGenerativeModel({
-          model: 'gemini-1.5-flash',
+          model: GEMINI_MODEL,
           systemInstruction: systemPrompt,
           generationConfig: {
             temperature: options.temperature ?? 0.3,
-            responseMimeType: options.jsonMode ? 'application/json' : 'text/plain',
           },
         });
 
@@ -92,19 +94,22 @@ export async function callLLM(prompt: string, systemPrompt?: string, options: LL
         return responseText;
       }
     } catch (err: any) {
-      const isRateLimit = err?.status === 429 || 
-                          err?.message?.includes('429') || 
-                          err?.message?.includes('RESOURCE_EXHAUSTED') ||
-                          err?.message?.includes('rate limit') ||
-                          err?.message?.includes('slow down');
+      const isRateLimitOrBusy = err?.status === 429 || 
+                                err?.status === 503 ||
+                                err?.message?.includes('429') || 
+                                err?.message?.includes('503') ||
+                                err?.message?.includes('RESOURCE_EXHAUSTED') ||
+                                err?.message?.includes('high demand') ||
+                                err?.message?.includes('rate limit') ||
+                                err?.message?.includes('slow down');
 
-      if (isRateLimit && attempt < maxRetries) {
+      if (isRateLimitOrBusy && attempt < maxRetries) {
         const backoffMs = Math.pow(2, attempt) * 1500 + Math.random() * 500;
-        console.warn(`[LLM Rate-Limit Warning] Rate limited (attempt ${attempt}/${maxRetries}). Retrying in ${Math.round(backoffMs)}ms...`);
+        console.warn(`[LLM Rate-Limit / High Demand Warning] Retrying in ${Math.round(backoffMs)}ms (attempt ${attempt}/${maxRetries})...`);
         await sleep(backoffMs);
       } else if (attempt < maxRetries) {
-        console.warn(`[LLM Error] ${err?.message || err}. Retrying (attempt ${attempt}/${maxRetries})...`);
-        await sleep(1000);
+        console.warn(`[LLM Error (${err?.message})]. Retrying (attempt ${attempt}/${maxRetries})...`);
+        await sleep(1500);
       } else {
         throw err;
       }
