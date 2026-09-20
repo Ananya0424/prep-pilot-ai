@@ -3,7 +3,12 @@
 @tailwind utilities;
 
 body {
-  @apply bg-slate-900 text-slate-100 min-h-screen antialiased;
+  @apply bg-[#030712] text-slate-100 min-h-screen antialiased;
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,30%,0.2) 0, transparent 50%);
+  background-attachment: fixed;
 }
 
 /* Custom smooth transitions for flashcard flips */

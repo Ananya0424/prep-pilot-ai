@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles,
   BookOpen,
@@ -191,45 +192,61 @@ export default function KitBuilderPage() {
   return (
     <div className="space-y-8 pb-16">
       {/* Kit Header */}
-      <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center space-x-2 text-xs font-semibold text-sky-400 mb-1">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="sticky top-4 z-50 bg-white/[0.03] backdrop-blur-2xl p-6 rounded-2xl border border-white/10 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-500/10 to-indigo-500/10 rounded-2xl opacity-50" />
+        <div className="relative z-10">
+          <div className="flex items-center space-x-2 text-xs font-bold tracking-wider uppercase text-brand-400 mb-2">
             <span>{kit.source.company}</span>
-            <span>•</span>
+            <span className="text-white/30">•</span>
             <span>{kit.source.role}</span>
           </div>
-          <h1 className="text-2xl font-bold text-white">{kit.role.title} Interview Kit</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Generated across {kit.schedule.days_available} day(s) • {kit.questions.length} questions • {kit.flashcards.length} flashcards
-          </p>
+          <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">{kit.role.title} Interview Kit</h1>
+          <div className="flex items-center space-x-3 text-xs font-medium text-slate-400 mt-2">
+            <span className="flex items-center space-x-1"><Calendar className="w-3.5 h-3.5"/><span>{kit.schedule.days_available} days</span></span>
+            <span className="text-white/20">•</span>
+            <span className="flex items-center space-x-1"><HelpCircle className="w-3.5 h-3.5"/><span>{kit.questions.length} questions</span></span>
+            <span className="text-white/20">•</span>
+            <span className="flex items-center space-x-1"><BookOpen className="w-3.5 h-3.5"/><span>{kit.flashcards.length} flashcards</span></span>
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="relative z-10 flex flex-wrap items-center gap-3">
           <Link
             href={`/practice/${kitId}`}
-            className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-emerald-600/20"
+            className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold rounded-xl text-sm flex items-center space-x-2 shadow-lg shadow-emerald-500/20 transition-all hover:scale-105"
           >
-            <PlayCircle className="w-4 h-4" />
+            <PlayCircle className="w-5 h-5" />
             <span>Practice Mode</span>
           </Link>
 
           <button
             onClick={handleSaveKit}
             disabled={saving}
-            className="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-sky-600/20"
+            className="px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold rounded-xl text-sm flex items-center space-x-2 transition-all hover:scale-105 backdrop-blur-md"
           >
-            <Save className="w-4 h-4" />
+            {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             <span>{saving ? 'Saving...' : 'Save Changes'}</span>
           </button>
 
-          {saveSuccess && (
-            <span className="text-xs text-emerald-400 font-semibold flex items-center space-x-1">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>Saved!</span>
-            </span>
-          )}
+          <AnimatePresence>
+            {saveSuccess && (
+              <motion.span 
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="text-sm text-emerald-400 font-bold flex items-center space-x-1"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Saved!</span>
+              </motion.span>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
 
       {/* Tabs */}
       <div className="flex border-b border-slate-800 space-x-4">
@@ -276,17 +293,23 @@ export default function KitBuilderPage() {
 
       {/* QUESTION BANK TAB */}
       {activeTab === 'questions' && (
-        <div className="space-y-8">
-          {categories.map((cat) => {
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+          {categories.map((cat, catIndex) => {
             const catQuestions = kit.questions.filter((q) => q.category === cat);
             const isRegenerating = regeneratingSection === `questions_${cat}`;
 
             return (
-              <div key={cat} className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: catIndex * 0.1 }}
+                key={cat} 
+                className="bg-white/[0.02] backdrop-blur-sm p-6 rounded-2xl border border-white/10 space-y-4"
+              >
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <div className="flex items-center space-x-2">
                     <h3 className="font-bold text-slate-100 capitalize text-base">{cat} Questions</h3>
-                    <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-xs">
+                    <span className="px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 text-xs font-semibold">
                       {catQuestions.length}
                     </span>
                   </div>
@@ -295,19 +318,19 @@ export default function KitBuilderPage() {
                     <button
                       onClick={() => handleRegenerateSection(`questions_${cat}`)}
                       disabled={isRegenerating}
-                      className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-sky-400 hover:text-sky-300 border border-slate-700/80 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all"
+                      className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-brand-400 hover:text-brand-300 border border-white/10 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all"
                       title="Regenerate this category without losing manual edits"
                     >
                       <RefreshCw className={`w-3.5 h-3.5 ${isRegenerating ? 'animate-spin' : ''}`} />
-                      <span>{isRegenerating ? 'Regenerating...' : 'Regenerate Section'}</span>
+                      <span>{isRegenerating ? 'Regenerating...' : 'Regenerate'}</span>
                     </button>
 
                     <button
                       onClick={() => handleAddQuestion(cat)}
-                      className="px-3 py-1.5 bg-sky-600/20 hover:bg-sky-600/30 text-sky-300 border border-sky-500/30 rounded-lg text-xs font-semibold flex items-center space-x-1"
+                      className="px-3 py-1.5 bg-brand-600/20 hover:bg-brand-600/30 text-brand-300 border border-brand-500/30 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-all"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>Add Question</span>
+                      <span>Add</span>
                     </button>
                   </div>
                 </div>
@@ -316,30 +339,33 @@ export default function KitBuilderPage() {
                   {catQuestions.length === 0 ? (
                     <p className="text-xs text-slate-500 italic">No questions in this category yet.</p>
                   ) : (
-                    catQuestions.map((q) => {
+                    catQuestions.map((q, qIndex) => {
                       const globalIdx = kit.questions.findIndex((item) => item.id === q.id);
                       const isPinned = (q as any).isPinned;
 
                       return (
-                        <div
+                        <motion.div
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: qIndex * 0.05 }}
                           key={q.id}
-                          className={`p-4 rounded-xl border transition-all space-y-3 ${
+                          className={`p-5 rounded-xl border transition-all space-y-4 ${
                             isPinned
-                              ? 'bg-amber-950/20 border-amber-500/40'
-                              : 'bg-slate-900/80 border-slate-800'
+                              ? 'bg-amber-950/10 border-amber-500/30 shadow-lg shadow-amber-900/10'
+                              : 'bg-black/20 border-white/5 hover:border-white/10 hover:bg-black/30'
                           }`}
                         >
                           <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1 space-y-2">
+                            <div className="flex-1 space-y-3">
                               <div className="flex items-center space-x-2">
-                                <span className="text-xs font-mono text-slate-400 font-bold">{q.id}</span>
+                                <span className="text-xs font-mono text-slate-400 font-bold bg-white/5 px-2 py-0.5 rounded">{q.id}</span>
                                 {isPinned && (
-                                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-semibold border border-amber-500/30">
+                                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold tracking-wide uppercase border border-amber-500/30">
                                     <Pin className="w-3 h-3" />
-                                    <span>Pinned / Edited</span>
+                                    <span>Pinned</span>
                                   </span>
                                 )}
-                                <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                                <span className="text-[10px] px-2 py-0.5 rounded bg-brand-500/10 text-brand-300 border border-brand-500/20 font-semibold">
                                   Difficulty: {q.difficulty}/3
                                 </span>
                               </div>
@@ -349,29 +375,29 @@ export default function KitBuilderPage() {
                                 value={q.prompt}
                                 onChange={(e) => handleUpdateQuestion(globalIdx, { prompt: e.target.value })}
                                 rows={2}
-                                className="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2.5 text-sm text-slate-100 font-medium focus:outline-none focus:border-sky-500"
+                                className="w-full bg-transparent border border-transparent hover:border-white/10 hover:bg-white/5 focus:bg-black/40 focus:border-brand-500 rounded-lg p-3 text-sm text-slate-100 font-medium focus:outline-none transition-all resize-none"
                               />
                             </div>
 
                             {/* Reordering Controls */}
-                            <div className="flex items-center space-x-1">
+                            <div className="flex flex-col items-center space-y-1 bg-white/5 rounded-lg p-1">
                               <button
                                 onClick={() => handleMoveQuestionOrder(globalIdx, 'up')}
                                 disabled={globalIdx === 0}
-                                className="p-1.5 hover:bg-slate-800 rounded text-slate-400 hover:text-white disabled:opacity-30"
+                                className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-white disabled:opacity-30 transition-colors"
                               >
                                 <ChevronUp className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => handleMoveQuestionOrder(globalIdx, 'down')}
                                 disabled={globalIdx === kit.questions.length - 1}
-                                className="p-1.5 hover:bg-slate-800 rounded text-slate-400 hover:text-white disabled:opacity-30"
+                                className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-white disabled:opacity-30 transition-colors"
                               >
                                 <ChevronDown className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => handleDeleteQuestion(q.id)}
-                                className="p-1.5 hover:bg-red-950/60 rounded text-slate-500 hover:text-red-400"
+                                className="p-1 hover:bg-red-500/20 rounded text-slate-500 hover:text-red-400 transition-colors mt-1"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -379,22 +405,22 @@ export default function KitBuilderPage() {
                           </div>
 
                           {/* Answer Outline Inline Edit */}
-                          <div>
-                            <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                          <div className="bg-black/20 p-3 rounded-xl border border-white/5">
+                            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
                               Answer Outline & Key Points
                             </label>
                             <textarea
                               value={q.answer_outline}
                               onChange={(e) => handleUpdateQuestion(globalIdx, { answer_outline: e.target.value })}
                               rows={3}
-                              className="w-full bg-slate-950 border border-slate-700/60 rounded-lg p-2.5 text-xs text-slate-300 focus:outline-none focus:border-sky-500 font-mono"
+                              className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-brand-500 rounded-lg p-2 text-xs text-slate-300 focus:outline-none font-mono transition-all resize-none"
                             />
                           </div>
 
                           {/* Category and Requirement Mapping */}
-                          <div className="flex flex-wrap items-center gap-3 pt-2 text-xs border-t border-slate-800/60">
-                            <div>
-                              <span className="text-slate-500 mr-1.5">Category:</span>
+                          <div className="flex flex-wrap items-center gap-4 pt-2 text-xs">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-slate-500 font-semibold uppercase tracking-wider text-[10px]">Category:</span>
                               <select
                                 value={q.category}
                                 onChange={(e) =>
@@ -402,44 +428,49 @@ export default function KitBuilderPage() {
                                     category: e.target.value as QuestionCategory,
                                   })
                                 }
-                                className="bg-slate-950 border border-slate-700 rounded px-2 py-1 text-slate-300 text-xs"
+                                className="bg-white/5 border border-white/10 rounded-md px-2 py-1 text-brand-300 text-xs focus:outline-none focus:border-brand-500"
                               >
                                 {categories.map((c) => (
-                                  <option key={c} value={c}>
+                                  <option key={c} value={c} className="bg-slate-900">
                                     {c}
                                   </option>
                                 ))}
                               </select>
                             </div>
 
-                            <div className="flex items-center space-x-1">
-                              <span className="text-slate-500">Requires:</span>
-                              {q.requirement_ids.map((reqId) => (
-                                <span key={reqId} className="px-1.5 py-0.5 bg-slate-800 rounded text-[10px] text-sky-300 font-mono">
-                                  {reqId}
-                                </span>
-                              ))}
+                            <div className="flex items-center space-x-2">
+                              <span className="text-slate-500 font-semibold uppercase tracking-wider text-[10px]">Requires:</span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {q.requirement_ids.map((reqId) => (
+                                  <span key={reqId} className="px-2 py-0.5 bg-brand-500/10 border border-brand-500/20 rounded text-[10px] text-brand-300 font-mono">
+                                    {reqId}
+                                  </span>
+                                ))}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       );
                     })
                   )}
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       )}
 
       {/* FLASHCARDS TAB */}
       {activeTab === 'flashcards' && (
-        <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-            <h3 className="font-bold text-slate-100 text-lg">Revision Flashcards</h3>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white/[0.02] backdrop-blur-sm p-6 rounded-2xl border border-white/10 space-y-6">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <h3 className="font-bold text-slate-100 text-lg flex items-center space-x-2">
+              <BookOpen className="w-5 h-5 text-brand-400" />
+              <span>Revision Flashcards</span>
+            </h3>
             <button
               onClick={handleAddFlashcard}
-              className="px-3.5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5"
+              className="px-4 py-2 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-lg shadow-brand-500/20 transition-all hover:scale-105"
             >
               <Plus className="w-4 h-4" />
               <span>Add Flashcard</span>
@@ -448,55 +479,64 @@ export default function KitBuilderPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {kit.flashcards.map((f, i) => (
-              <div key={f.id} className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-3 relative group">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.05 }}
+                key={f.id} 
+                className="bg-black/20 border border-white/5 hover:border-white/10 p-5 rounded-2xl space-y-4 relative group transition-all"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-slate-400 font-bold">{f.id}</span>
+                  <span className="text-xs font-mono text-slate-400 font-bold bg-white/5 px-2 py-0.5 rounded">{f.id}</span>
                   <button
                     onClick={() => handleDeleteFlashcard(f.id)}
-                    className="p-1 text-slate-500 hover:text-red-400"
+                    className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">Front (Prompt/Concept)</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Front (Prompt/Concept)</label>
                   <textarea
                     value={f.front}
                     onChange={(e) => handleUpdateFlashcard(i, { front: e.target.value })}
                     rows={2}
-                    className="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200"
+                    className="w-full bg-white/5 border border-transparent hover:border-white/10 focus:border-brand-500 rounded-xl p-3 text-sm text-slate-200 transition-all focus:outline-none resize-none font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">Back (Answer Summary)</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Back (Answer Summary)</label>
                   <textarea
                     value={f.back}
                     onChange={(e) => handleUpdateFlashcard(i, { back: e.target.value })}
                     rows={3}
-                    className="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-300 font-mono"
+                    className="w-full bg-white/5 border border-transparent hover:border-white/10 focus:border-brand-500 rounded-xl p-3 text-xs text-slate-300 font-mono transition-all focus:outline-none resize-none"
                   />
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* SCHEDULE TAB */}
       {activeTab === 'schedule' && (
-        <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white/[0.02] backdrop-blur-sm p-6 rounded-2xl border border-white/10 space-y-6">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
             <div>
-              <h3 className="font-bold text-slate-100 text-lg">Arithmetic Study Schedule</h3>
-              <p className="text-xs text-slate-400">Allocates topics across exactly {kit.schedule.days_available} days</p>
+              <h3 className="font-bold text-slate-100 text-lg flex items-center space-x-2">
+                <Calendar className="w-5 h-5 text-brand-400" />
+                <span>Arithmetic Study Schedule</span>
+              </h3>
+              <p className="text-xs text-slate-400 mt-1">Allocates topics across exactly {kit.schedule.days_available} days</p>
             </div>
 
             <button
               onClick={() => handleRegenerateSection('schedule')}
               disabled={regeneratingSection === 'schedule'}
-              className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-sky-400 border border-slate-700 rounded-xl text-xs font-semibold flex items-center space-x-1.5"
+              className="px-4 py-2 bg-white/5 hover:bg-white/10 text-brand-400 border border-white/10 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all hover:scale-105"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${regeneratingSection === 'schedule' ? 'animate-spin' : ''}`} />
               <span>Re-allocate Schedule</span>
@@ -504,112 +544,132 @@ export default function KitBuilderPage() {
           </div>
 
           <div className="space-y-4">
-            {kit.schedule.days.map((d) => (
-              <div key={d.day} className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
-                  <div className="flex items-center space-x-3">
-                    <span className="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 font-bold text-sm flex items-center justify-center">
+            {kit.schedule.days.map((d, i) => (
+              <motion.div 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                key={d.day} 
+                className="bg-black/20 border border-white/5 p-5 rounded-2xl space-y-3 hover:border-white/10 transition-colors"
+              >
+                <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                  <div className="flex items-center space-x-4">
+                    <span className="w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-500/30 text-brand-400 font-extrabold text-sm flex items-center justify-center shadow-inner">
                       D{d.day}
                     </span>
-                    <h4 className="font-semibold text-slate-200 text-sm">{d.focus}</h4>
+                    <h4 className="font-bold text-slate-200 text-sm tracking-wide">{d.focus}</h4>
                   </div>
-                  <span className="text-xs font-mono text-slate-400 px-2 py-1 bg-slate-950 rounded border border-slate-800">
+                  <span className="text-xs font-mono text-slate-400 px-3 py-1 bg-white/5 rounded-lg border border-white/10 font-semibold">
                     {d.minutes} Integer Minutes
                   </span>
                 </div>
 
-                <div className="space-y-1.5 pl-11">
+                <div className="space-y-2 pl-14">
                   {d.question_ids.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic">Rest / Buffer Review session.</p>
+                    <p className="text-xs text-slate-500 italic flex items-center space-x-1.5"><Sparkles className="w-3.5 h-3.5 text-emerald-500/50"/><span>Rest / Buffer Review session.</span></p>
                   ) : (
                     d.question_ids.map((qId) => {
                       const questionObj = kit.questions.find((q) => q.id === qId);
                       return (
-                        <div key={qId} className="text-xs text-slate-300 flex items-center space-x-2">
-                          <span className="font-mono text-sky-400 font-bold">{qId}:</span>
-                          <span className="truncate">{questionObj?.prompt || 'Question prompt'}</span>
+                        <div key={qId} className="text-xs text-slate-300 flex items-center space-x-3 bg-white/5 px-3 py-2 rounded-lg">
+                          <span className="font-mono text-brand-400 font-bold bg-black/30 px-1.5 py-0.5 rounded">{qId}</span>
+                          <span className="truncate flex-1 font-medium">{questionObj?.prompt || 'Question prompt'}</span>
                         </div>
                       );
                     })
                   )}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* BRIEF & ROLE TAB */}
       {activeTab === 'brief' && (
-        <div className="space-y-6">
-          <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="font-bold text-slate-100 text-lg">Company Research Brief</h3>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <div className="bg-white/[0.02] backdrop-blur-sm p-6 rounded-2xl border border-white/10 space-y-5">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <h3 className="font-bold text-slate-100 text-lg flex items-center space-x-2">
+                <Globe className="w-5 h-5 text-brand-400" />
+                <span>Company Research Brief</span>
+              </h3>
               <button
                 onClick={() => handleRegenerateSection('company_brief')}
                 disabled={regeneratingSection === 'company_brief'}
-                className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-sky-400 border border-slate-700 rounded-lg text-xs font-semibold flex items-center space-x-1.5"
+                className="px-4 py-2 bg-white/5 hover:bg-white/10 text-brand-400 border border-white/10 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all hover:scale-105"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${regeneratingSection === 'company_brief' ? 'animate-spin' : ''}`} />
                 <span>Regenerate Brief</span>
               </button>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1">Overview & Summary</label>
-              <textarea
-                value={kit.company_brief.summary}
-                onChange={(e) =>
-                  setKit({
-                    ...kit,
-                    company_brief: { ...kit.company_brief, summary: e.target.value },
-                  })
-                }
-                rows={3}
-                className="w-full bg-slate-900 border border-slate-700/80 rounded-xl p-3 text-sm text-slate-200"
-              />
-            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Overview & Summary</label>
+                <textarea
+                  value={kit.company_brief.summary}
+                  onChange={(e) =>
+                    setKit({
+                      ...kit,
+                      company_brief: { ...kit.company_brief, summary: e.target.value },
+                    })
+                  }
+                  rows={4}
+                  className="w-full bg-black/20 border border-white/5 hover:border-white/10 focus:border-brand-500 rounded-xl p-4 text-sm text-slate-200 transition-all focus:outline-none resize-none leading-relaxed"
+                />
+              </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1">What They Do</label>
-              <textarea
-                value={kit.company_brief.what_they_do}
-                onChange={(e) =>
-                  setKit({
-                    ...kit,
-                    company_brief: { ...kit.company_brief, what_they_do: e.target.value },
-                  })
-                }
-                rows={3}
-                className="w-full bg-slate-900 border border-slate-700/80 rounded-xl p-3 text-sm text-slate-200"
-              />
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">What They Do</label>
+                <textarea
+                  value={kit.company_brief.what_they_do}
+                  onChange={(e) =>
+                    setKit({
+                      ...kit,
+                      company_brief: { ...kit.company_brief, what_they_do: e.target.value },
+                    })
+                  }
+                  rows={4}
+                  className="w-full bg-black/20 border border-white/5 hover:border-white/10 focus:border-brand-500 rounded-xl p-4 text-sm text-slate-200 transition-all focus:outline-none resize-none leading-relaxed"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h3 className="font-bold text-slate-100 text-lg border-b border-slate-800 pb-3">Extracted Role Requirements</h3>
+          <div className="bg-white/[0.02] backdrop-blur-sm p-6 rounded-2xl border border-white/10 space-y-5">
+            <h3 className="font-bold text-slate-100 text-lg border-b border-white/10 pb-4 flex items-center space-x-2">
+              <FileText className="w-5 h-5 text-brand-400" />
+              <span>Extracted Role Requirements</span>
+            </h3>
             <div className="space-y-3">
-              {kit.role.requirements.map((req) => (
-                <div key={req.id} className="p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-3">
-                    <span className="font-mono text-sky-400 font-bold">{req.id}</span>
-                    <span className="text-slate-200 font-medium">{req.text}</span>
+              {kit.role.requirements.map((req, i) => (
+                <motion.div 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  key={req.id} 
+                  className="p-4 bg-black/20 border border-white/5 hover:border-white/10 rounded-xl flex items-center justify-between text-xs transition-colors"
+                >
+                  <div className="flex items-center space-x-4">
+                    <span className="font-mono text-brand-400 font-bold bg-white/5 px-2 py-1 rounded">{req.id}</span>
+                    <span className="text-slate-200 font-medium text-sm">{req.text}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-400 capitalize">{req.kind}</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-white/5 text-slate-400 capitalize font-semibold">{req.kind}</span>
                     <span
-                      className={`px-2 py-0.5 rounded font-semibold ${
-                        req.priority === 'must' ? 'bg-red-950/60 text-red-300 border border-red-800/60' : 'bg-slate-800 text-slate-400'
+                      className={`px-2.5 py-1 rounded-lg font-bold tracking-wide uppercase text-[10px] ${
+                        req.priority === 'must' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-white/5 text-slate-400'
                       }`}
                     >
                       {req.priority}
                     </span>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );
