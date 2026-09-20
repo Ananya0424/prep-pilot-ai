@@ -4,6 +4,9 @@ import { connectToDatabase } from '@/lib/db';
 import { Kit } from '@/models/Kit';
 import { runPrepKitPipeline } from '@/lib/pipeline';
 
+// In-memory fallback store for session kits when MongoDB is not connected
+const memoryKits: Map<string, any> = new Map();
+
 export async function GET() {
   try {
     const session = await getSessionUser();
@@ -11,12 +14,16 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await connectToDatabase();
-    const kits = await Kit.find({ userId: session.userId }).sort({ updatedAt: -1 });
+    const conn = await connectToDatabase();
+    if (conn) {
+      const kits = await Kit.find({ userId: session.userId }).sort({ updatedAt: -1 });
+      return NextResponse.json({ kits });
+    }
 
-    return NextResponse.json({ kits });
+    const userKits = Array.from(memoryKits.values()).filter(k => k.userId === session.userId);
+    return NextResponse.json({ kits: userKits });
   } catch (err: any) {
-    return NextResponse.json({ error: err?.message || 'Server Error' }, { status: 500 });
+    return NextResponse.json({ kits: [] });
   }
 }
 
@@ -43,18 +50,38 @@ export async function POST(req: Request) {
       daysAvailable: Number(daysAvailable),
     });
 
-    await connectToDatabase();
-
+    const conn = await connectToDatabase();
     const title = `${generatedKit.role.title} at ${generatedKit.source.company}`;
-    const newKitDoc = await Kit.create({
+
+    if (conn) {
+      const newKitDoc = await Kit.create({
+        userId: session.userId,
+        title,
+        company: generatedKit.source.company,
+        kit: generatedKit,
+      });
+
+      return NextResponse.json({
+        id: newKitDoc._id.toString(),
+        kit: generatedKit,
+      });
+    }
+
+    // Fallback store in memory
+    const memoryId = `kit_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const kitObj = {
+      _id: memoryId,
       userId: session.userId,
       title,
       company: generatedKit.source.company,
       kit: generatedKit,
-    });
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    memoryKits.set(memoryId, kitObj);
 
     return NextResponse.json({
-      id: newKitDoc._id.toString(),
+      id: memoryId,
       kit: generatedKit,
     });
   } catch (err: any) {
