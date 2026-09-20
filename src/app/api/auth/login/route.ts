@@ -6,8 +6,8 @@ import { comparePassword, signToken, setTokenCookie } from '@/lib/auth';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const email = body.email ? body.email.toLowerCase().trim() : '';
-    const password = body.password ? body.password.trim() : '';
+    const email = body.email ? body.email.toLowerCase().replace(/\s+/g, '') : '';
+    const password = body.password ? body.password.replace(/\s+/g, '') : '';
 
     if (!email || !password) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });

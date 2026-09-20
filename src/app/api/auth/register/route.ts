@@ -6,8 +6,8 @@ import { hashPassword, signToken, setTokenCookie } from '@/lib/auth';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const email = body.email ? body.email.toLowerCase().trim() : '';
-    const password = body.password ? body.password.trim() : '';
+    const email = body.email ? body.email.toLowerCase().replace(/\s+/g, '') : '';
+    const password = body.password ? body.password.replace(/\s+/g, '') : '';
     const name = body.name ? body.name.trim() : '';
 
     if (!email || !password || password.length < 4) {
