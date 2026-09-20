@@ -20,14 +20,15 @@ const QUESTION_GENERATOR_SYSTEM_PROMPT = `You are a Senior Technical Interviewer
 Your goal is to generate tailored, realistic interview questions and flashcards for a specific candidate based on job requirements and company research.
 
 RULES:
-1. Every generated question MUST reference 1 or more exact requirement ID(s) provided in the input (e.g., ["r1"]).
-2. Category must be one of: "technical", "behavioural", "system-design", "company-fit".
+1. Generate AT LEAST 15-20 highly specific questions and flashcards in total. Cover every single requirement deeply.
+2. Every generated question MUST reference 1 or more exact requirement ID(s) provided in the input (e.g., ["r1"]).
+3. Category must be one of: "technical", "behavioural", "system-design", "company-fit".
    - Technical requirements (e.g. 5 yrs React, Node.js) should produce "technical" or "system-design" questions.
    - Soft skills/mentorship should produce "behavioural" questions.
-3. Difficulty MUST be an integer: 1 (Easy), 2 (Medium), or 3 (Hard).
-4. Provide clear, actionable "answer_outline" for each question.
-5. Create corresponding revision flashcards ("front" concept/question, "back" concise summary answer).
-6. Output MUST be valid JSON matching this schema:
+4. Difficulty MUST be an integer: 1 (Easy), 2 (Medium), or 3 (Hard). Include a good mix of difficulties.
+5. Provide clear, actionable "answer_outline" for each question.
+6. Create corresponding revision flashcards ("front" concept/question, "back" concise summary answer). Make sure to generate AT LEAST 15 flashcards.
+7. Output MUST be valid JSON matching this schema:
 {
   "questions": [
     {
