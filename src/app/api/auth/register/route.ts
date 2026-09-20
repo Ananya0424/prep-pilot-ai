@@ -5,7 +5,10 @@ import { hashPassword, signToken, setTokenCookie } from '@/lib/auth';
 
 export async function POST(req: Request) {
   try {
-    const { email, password, name } = await req.json();
+    const body = await req.json();
+    const email = body.email ? body.email.toLowerCase().trim() : '';
+    const password = body.password ? body.password.trim() : '';
+    const name = body.name ? body.name.trim() : '';
 
     if (!email || !password || password.length < 4) {
       return NextResponse.json({ error: 'Valid email and password (min 4 chars) are required' }, { status: 400 });
@@ -14,13 +17,13 @@ export async function POST(req: Request) {
     const conn = await connectToDatabase();
 
     if (conn) {
-      const existingUser = await User.findOne({ email: email.toLowerCase() });
+      const existingUser = await User.findOne({ email });
       if (!existingUser) {
         const passwordHash = await hashPassword(password);
         const newUser = await User.create({
-          email: email.toLowerCase(),
+          email,
           passwordHash,
-          name: name || '',
+          name,
         });
 
         const token = signToken(newUser._id.toString(), newUser.email);
@@ -34,20 +37,19 @@ export async function POST(req: Request) {
 
     // Fallback registration session
     const demoUserId = 'demo-user-123';
-    const token = signToken(demoUserId, email.toLowerCase());
+    const token = signToken(demoUserId, email);
     setTokenCookie(token);
 
     return NextResponse.json({
-      user: { id: demoUserId, email: email.toLowerCase(), name: name || 'Candidate' },
+      user: { id: demoUserId, email, name: name || 'Candidate' },
     });
   } catch (err: any) {
-    const { email, name } = await req.json().catch(() => ({ email: 'candidate@example.com', name: 'Candidate' }));
     const demoUserId = 'demo-user-123';
-    const token = signToken(demoUserId, email || 'candidate@example.com');
+    const token = signToken(demoUserId, 'candidate@example.com');
     setTokenCookie(token);
 
     return NextResponse.json({
-      user: { id: demoUserId, email: email || 'candidate@example.com', name: name || 'Candidate' },
+      user: { id: demoUserId, email: 'candidate@example.com', name: 'Candidate' },
     });
   }
 }
