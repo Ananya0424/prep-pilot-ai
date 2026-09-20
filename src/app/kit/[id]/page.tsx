@@ -20,6 +20,7 @@ import {
   ChevronDown,
   ChevronUp,
   Move,
+  Globe,
 } from 'lucide-react';
 import { PrepKit, Question, Flashcard, QuestionCategory } from '@/types/kit';
 
