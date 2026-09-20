@@ -1,0 +1,198 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-09-20T07:14:29.167Z",
+  "kits": [
+    {
+      "id": "case-01",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "Example",
+          "company_url": "https://example.com",
+          "role": "Job Position",
+          "location": "Remote / Unspecified",
+          "jd_chars": 320,
+          "researched_at": "2026-09-20T07:14:19.487Z",
+          "pages_used": [
+            "https://example.com"
+          ]
+        },
+        "company_brief": {
+          "summary": "Company details gathered from web search.",
+          "what_they_do": "Software & Technology services.",
+          "sources": [
+            "https://example.com"
+          ]
+        },
+        "role": {
+          "title": "Job Position",
+          "seniority": "Unspecified",
+          "responsibilities": [
+            "General software engineering responsibilities"
+          ],
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5",
+              "kind": "technical",
+              "priority": "must"
+            }
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "Can you describe your experience with Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5?",
+            "answer_outline": "Demonstrate hands-on experience, key challenges faced, and measurable impact related to Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5.",
+            "difficulty": 2
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "f1",
+            "front": "Core concept: Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5",
+            "back": "Essential principles and best practices for Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5.",
+            "requirement_ids": [
+              "r1"
+            ]
+          }
+        ],
+        "schedule": {
+          "days_available": 5,
+          "days": [
+            {
+              "day": 1,
+              "focus": "Day 1: Technical",
+              "question_ids": [
+                "q1"
+              ],
+              "minutes": 30
+            },
+            {
+              "day": 2,
+              "focus": "Day 2: General Review & Prep",
+              "question_ids": [],
+              "minutes": 30
+            },
+            {
+              "day": 3,
+              "focus": "Day 3: General Review & Prep",
+              "question_ids": [],
+              "minutes": 30
+            },
+            {
+              "day": 4,
+              "focus": "Day 4: General Review & Prep",
+              "question_ids": [],
+              "minutes": 30
+            },
+            {
+              "day": 5,
+              "focus": "Day 5: General Review & Prep",
+              "question_ids": [],
+              "minutes": 30
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "case-02",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "Httpbin",
+          "company_url": "https://httpbin.org/status/404",
+          "role": "Job Position",
+          "location": "Remote / Unspecified",
+          "jd_chars": 40,
+          "researched_at": "2026-09-20T07:14:29.167Z",
+          "pages_used": []
+        },
+        "company_brief": {
+          "summary": "Company website could not be reached or provided no public information.",
+          "what_they_do": "Information unavailable from public crawling.",
+          "sources": [
+            "https://httpbin.org/status/404"
+          ]
+        },
+        "role": {
+          "title": "Job Position",
+          "seniority": "Unspecified",
+          "responsibilities": [
+            "General software engineering responsibilities"
+          ],
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Backend Developer\nNeed a Node developer.",
+              "kind": "technical",
+              "priority": "must"
+            }
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "Can you describe your experience with Backend Developer\nNeed a Node developer.?",
+            "answer_outline": "Demonstrate hands-on experience, key challenges faced, and measurable impact related to Backend Developer\nNeed a Node developer..",
+            "difficulty": 2
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "f1",
+            "front": "Core concept: Backend Developer\nNeed a Node developer.",
+            "back": "Essential principles and best practices for Backend Developer\nNeed a Node developer..",
+            "requirement_ids": [
+              "r1"
+            ]
+          }
+        ],
+        "schedule": {
+          "days_available": 3,
+          "days": [
+            {
+              "day": 1,
+              "focus": "Day 1: Technical",
+              "question_ids": [
+                "q1"
+              ],
+              "minutes": 30
+            },
+            {
+              "day": 2,
+              "focus": "Day 2: General Review & Prep",
+              "question_ids": [],
+              "minutes": 30
+            },
+            {
+              "day": 3,
+              "focus": "Day 3: General Review & Prep",
+              "question_ids": [],
+              "minutes": 30
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    }
+  ]
+}

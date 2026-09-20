@@ -1,0 +1,14 @@
+[
+  {
+    "id": "case-01",
+    "jd": "Senior Full-Stack Engineer (React + Node.js)\n\nWe are looking for a Senior Full-Stack Engineer with 5+ years of experience building scalable web applications. Must be proficient in React, Node.js, and MongoDB. Experience with system design and mentoring junior developers is required. Bonus points for GraphQL and Docker.",
+    "company_url": "https://example.com",
+    "days": 5
+  },
+  {
+    "id": "case-02",
+    "jd": "Backend Developer\nNeed a Node developer.",
+    "company_url": "https://httpbin.org/status/404",
+    "days": 3
+  }
+]
