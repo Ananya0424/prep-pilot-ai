@@ -28,18 +28,18 @@ export default function LandingPage() {
             
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <Link 
-                href="/dashboard"
+                href="/register"
                 className="group px-8 py-4 bg-slate-900 hover:bg-brand-600 text-white font-bold rounded-2xl shadow-lg shadow-slate-900/10 hover:shadow-brand-600/25 transition-all duration-300 flex items-center justify-center gap-2 text-base w-full sm:w-auto"
               >
-                <span>Build your interview kit</span>
+                <span>Get Started for Free</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               
               <Link 
-                href="/dashboard"
+                href="/login"
                 className="px-8 py-4 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold rounded-2xl shadow-sm transition-all duration-300 flex items-center justify-center text-base w-full sm:w-auto"
               >
-                View my kits
+                Sign In
               </Link>
             </div>
 
