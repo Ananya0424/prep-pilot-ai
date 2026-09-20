@@ -45,9 +45,12 @@ export function buildDeterministicSchedule(
     minutes: 0,
   }));
 
-  // Round-robin or bucket distribution (earlier days get higher weighted items)
+  // Sequential chunking: earlier days get the front of the sorted array (harder & must-have)
+  const itemsPerDay = Math.ceil(sortedQuestions.length / safeDays);
+  
   sortedQuestions.forEach((q, idx) => {
-    const targetDayIndex = idx % safeDays;
+    // Determine which day this goes to sequentially
+    const targetDayIndex = Math.min(Math.floor(idx / itemsPerDay), safeDays - 1);
     days[targetDayIndex].question_ids.push(q.id);
 
     // Duration based on difficulty: diff 3 = 45m, diff 2 = 30m, diff 1 = 20m

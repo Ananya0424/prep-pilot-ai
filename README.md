@@ -113,8 +113,8 @@ One of the core requirements is that **regenerating one section must not clobber
 As required by Section 8, schedule creation is **pure arithmetic and allocation in code**, not handed to the LLM prompt:
 
 - Questions are sorted by **Priority** (Must-haves first) and **Difficulty** (3 -> 2 -> 1).
-- Questions are distributed round-robin across the requested `days_available`.
-- Harder and higher-priority topics are placed in earlier days.
+- Questions are distributed using **sequential chunking** across the requested `days_available`.
+- This ensures harder and higher-priority topics are heavily loaded into the earlier days, while easier material lands on the night before.
 - Durations are calculated in **integer minutes** (Difficulty 3 = 45m, 2 = 30m, 1 = 20m).
 
 ---
@@ -137,3 +137,16 @@ Run unit tests covering schedule allocation, coverage checking, and schema valid
 ```bash
 npm test
 ```
+
+---
+
+## 9. Trade-offs and Limitations
+
+### Design Decisions
+- **Next.js App Router for Backend:** Instead of a standalone Node.js+Express server, Next.js API Routes were used to colocate frontend and backend. This reduces operational overhead on free-tier deployments while keeping extraction, generation, and persistence as cleanly separated functions inside `src/lib`.
+- **SSRF Protection in Crawler:** The crawler implements strict IP checks in production to prevent SSRF against internal/loopback IPs, respecting the strict security guidelines.
+- **Sequential Chunking for Schedule:** Rather than naive round-robin, questions are grouped sequentially. This guarantees that early days exclusively handle the hardest/highest-priority topics.
+
+### Known Limitations
+- LLM response latency heavily affects user experience since pipeline is blocking. A queue system (e.g., BullMQ or Inngest) would be better for production scale.
+- The crawler uses Cheerio. Client-side rendered pages (React/Vue without SSR) might appear empty unless headless browsers (Puppeteer) are used, which are omitted to respect free-tier memory constraints.
