@@ -26,6 +26,7 @@ module.exports = {
         'fade-in': 'fadeIn 0.4s ease-out forwards',
         'slide-up': 'slideUp 0.4s ease-out forwards',
         'blob': 'blob 7s infinite',
+        'dash': 'dash 20s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -41,6 +42,10 @@ module.exports = {
           '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
           '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
           '100%': { transform: 'translate(0px, 0px) scale(1)' },
+        },
+        dash: {
+          '0%': { strokeDashoffset: '100' },
+          '100%': { strokeDashoffset: '0' },
         }
       }
     },
