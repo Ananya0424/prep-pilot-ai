@@ -37,37 +37,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 bg-slate-950 p-8 rounded-2xl border border-slate-800 shadow-xl">
-      <h2 className="text-2xl font-bold text-center mb-2">Welcome Back</h2>
-      <p className="text-sm text-slate-400 text-center mb-6">Sign in to access your interview prep kits</p>
+    <div className="max-w-md mx-auto mt-12 bg-white p-8 sm:p-10 rounded-2xl border border-slate-200 shadow-sm">
+      <h2 className="text-2xl font-bold text-center mb-2 text-slate-900 tracking-tight">Welcome Back</h2>
+      <p className="text-sm text-slate-500 text-center mb-8">Sign in to access your interview prep kits</p>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-950/50 border border-red-800/80 rounded-lg text-red-300 text-sm">
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleLogin} className="space-y-4">
+      <form onSubmit={handleLogin} className="space-y-5">
         <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-1">Email Address</label>
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Email Address</label>
           <input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:border-brand-500 text-sm"
+            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-brand-500 focus:bg-white text-sm transition-colors font-medium shadow-inner"
             placeholder="candidate@example.com"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-1">Password</label>
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Password</label>
           <input
             type="password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:border-brand-500 text-sm"
+            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-brand-500 focus:bg-white text-sm transition-colors font-medium shadow-inner"
             placeholder="••••••••"
           />
         </div>
@@ -75,15 +75,15 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-lg shadow-lg shadow-brand-600/30 transition-all disabled:opacity-50 text-sm"
+          className="w-full py-3.5 mt-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-sm transition-colors disabled:opacity-50 text-sm"
         >
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
       </form>
 
-      <p className="text-xs text-slate-400 text-center mt-6">
+      <p className="text-sm text-slate-500 text-center mt-8 font-medium">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="text-brand-400 hover:underline">
+        <Link href="/register" className="text-brand-600 hover:text-brand-700 font-bold hover:underline">
           Register here
         </Link>
       </p>
