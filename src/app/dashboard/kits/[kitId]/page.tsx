@@ -17,6 +17,7 @@ type Confidence = 'low' | 'medium' | 'high';
 type ConfidenceMap = Record<string, Confidence>;
 const CONF_STORAGE_KEY = 'preppilot_kit_confidence';
 const DONE_DAYS_KEY = 'preppilot_kit_schedule_done';
+const DAY_SCORES_KEY = 'preppilot_kit_day_scores';
 
 export default function KitDetailPage() {
   const params = useParams();
@@ -34,6 +35,7 @@ export default function KitDetailPage() {
   // Confidence & Schedule State
   const [confidenceMap, setConfidenceMap] = useState<ConfidenceMap>({});
   const [doneDays, setDoneDays] = useState<Set<number>>(new Set());
+  const [dayScores, setDayScores] = useState<Record<number, number>>({});
 
   // Active Day Practice Modal State
   const [activeDayPractice, setActiveDayPractice] = useState<{
@@ -54,6 +56,9 @@ export default function KitDetailPage() {
 
       const rawDays = localStorage.getItem(`${DONE_DAYS_KEY}_${kitId}`);
       if (rawDays) setDoneDays(new Set(JSON.parse(rawDays)));
+
+      const rawScores = localStorage.getItem(`${DAY_SCORES_KEY}_${kitId}`);
+      if (rawScores) setDayScores(JSON.parse(rawScores));
     } catch {}
   }, [kitId]);
 
@@ -222,6 +227,14 @@ export default function KitDetailPage() {
       const next = new Set(prev);
       next.has(dayNum) ? next.delete(dayNum) : next.add(dayNum);
       try { localStorage.setItem(`${DONE_DAYS_KEY}_${kitId}`, JSON.stringify([...next])); } catch {}
+      return next;
+    });
+  };
+
+  const saveDayScore = (dayNum: number, scorePct: number) => {
+    setDayScores(prev => {
+      const next = { ...prev, [dayNum]: scorePct };
+      try { localStorage.setItem(`${DAY_SCORES_KEY}_${kitId}`, JSON.stringify(next)); } catch {}
       return next;
     });
   };
@@ -611,9 +624,20 @@ export default function KitDetailPage() {
                             <h3 className={`text-[14px] font-bold ${isDone ? 'text-emerald-700' : 'text-slate-900'}`}>
                               Day {day.day}: {cleanFocus}
                             </h3>
-                            <p className="text-[12px] font-medium text-slate-400">
-                              Duration: {day.minutes} mins
-                            </p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <p className="text-[12px] font-medium text-slate-400">
+                                Duration: {day.minutes} mins
+                              </p>
+                              {dayScores[day.day] !== undefined && (
+                                <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${
+                                  dayScores[day.day] >= 80 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                  dayScores[day.day] >= 55 ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                                  'bg-red-50 text-red-700 border-red-200'
+                                }`}>
+                                  Overall Rating: {dayScores[day.day]}% Ready
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
 
@@ -668,8 +692,11 @@ export default function KitDetailPage() {
           totalDays={kit.schedule?.days?.length || 7}
           onClose={() => setActiveDayPractice(null)}
           onRateConfidence={updateConfidence}
-          onCompleteDay={() => {
+          onCompleteDay={(scorePct) => {
             markDayDone(activeDayPractice.dayNum);
+            if (scorePct !== undefined) {
+              saveDayScore(activeDayPractice.dayNum, scorePct);
+            }
           }}
           onNextDay={() => {
             markDayDone(activeDayPractice.dayNum);
@@ -701,24 +728,37 @@ function DayPracticeModal({
   questions: Question[];
   totalDays: number;
   onClose: () => void;
-  onCompleteDay: () => void;
+  onCompleteDay: (scorePct?: number) => void;
   onNextDay: () => void;
   onRateConfidence?: (cardId: string, c: Confidence) => void;
 }) {
   const [qIdx, setQIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [sessionRatings, setSessionRatings] = useState<Record<string, Confidence>>({});
 
   const currentQ = questions[qIdx];
   const isLast = qIdx === questions.length - 1;
 
-  const handleNext = () => {
+  const handleRate = (rating: Confidence) => {
+    if (!currentQ) return;
+    onRateConfidence?.(currentQ.id, rating);
+    const updatedRatings = { ...sessionRatings, [currentQ.id]: rating };
+    setSessionRatings(updatedRatings);
+
     if (!isLast) {
       setQIdx(i => i + 1);
       setRevealed(false);
     } else {
+      const high = Object.values(updatedRatings).filter(c => c === 'high').length;
+      const med = Object.values(updatedRatings).filter(c => c === 'medium').length;
+      const low = Object.values(updatedRatings).filter(c => c === 'low').length;
+      const total = questions.length;
+      const pts = (high * 3) + (med * 2) + (low * 1);
+      const score = total > 0 ? Math.round((pts / (total * 3)) * 100) : 100;
+
       setFinished(true);
-      onCompleteDay();
+      onCompleteDay(score);
     }
   };
 
@@ -741,31 +781,77 @@ function DayPracticeModal({
         </div>
 
         {finished ? (
-          /* Day Completed Celebration */
-          <div className="text-center py-6 space-y-4">
+          /* Day Completed Celebration & Summary */
+          <div className="text-center py-4 space-y-4">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
               <Award className="w-8 h-8" />
             </div>
             <div>
-              <h2 className="text-[20px] font-extrabold text-slate-900">Day {dayNum} Completed! 🎉</h2>
+              <h2 className="text-[20px] font-extrabold text-slate-900">Day {dayNum} Practice Complete! 🎉</h2>
               <p className="text-[13px] text-slate-500 font-medium mt-1">
-                Great job! All {questions.length} topic questions for Day {dayNum} have been reviewed.
+                Here is your overall practice score and rating breakdown for Day {dayNum}:
               </p>
             </div>
 
-            <div className="flex gap-3 pt-4">
+            {/* Overall Score Badge Card */}
+            {(() => {
+              const high = Object.values(sessionRatings).filter(c => c === 'high').length;
+              const med = Object.values(sessionRatings).filter(c => c === 'medium').length;
+              const low = Object.values(sessionRatings).filter(c => c === 'low').length;
+              const total = questions.length;
+              const pts = (high * 3) + (med * 2) + (low * 1);
+              const score = total > 0 ? Math.round((pts / (total * 3)) * 100) : 100;
+
+              let label = '🌟 High Readiness';
+              let badgeBg = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+              if (score < 55) {
+                label = '📚 Revision Recommended';
+                badgeBg = 'bg-red-50 text-red-700 border-red-200';
+              } else if (score < 80) {
+                label = '⚡ Moderate Readiness';
+                badgeBg = 'bg-amber-50 text-amber-700 border-amber-200';
+              }
+
+              return (
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3 max-w-md mx-auto">
+                  <div className="flex items-center justify-between border-b border-slate-200/60 pb-3">
+                    <span className="text-[12px] font-bold text-slate-500">Day Overall Score</span>
+                    <span className={`text-[13px] font-extrabold px-3 py-1 rounded-xl border ${badgeBg}`}>
+                      {score}% ({label})
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 pt-1 text-center">
+                    <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-2.5">
+                      <p className="text-[18px] font-extrabold text-emerald-700">{high}</p>
+                      <p className="text-[10px] font-bold text-emerald-600 uppercase">High Confidence</p>
+                    </div>
+                    <div className="bg-amber-50 border border-amber-100 rounded-xl p-2.5">
+                      <p className="text-[18px] font-extrabold text-amber-700">{med}</p>
+                      <p className="text-[10px] font-bold text-amber-600 uppercase">Medium</p>
+                    </div>
+                    <div className="bg-red-50 border border-red-100 rounded-xl p-2.5">
+                      <p className="text-[18px] font-extrabold text-red-700">{low}</p>
+                      <p className="text-[10px] font-bold text-red-600 uppercase">Low Confidence</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <div className="flex gap-3 pt-2">
               <button
                 onClick={onClose}
                 className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[13px] font-bold rounded-xl transition-colors"
               >
-                Close & Review
+                Close Summary
               </button>
               {dayNum < totalDays && (
                 <button
                   onClick={onNextDay}
                   className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-bold rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
                 >
-                  Start Day {dayNum + 1} Practice <ArrowRight className="w-4 h-4" />
+                  Start Day {dayNum + 1} <ArrowRight className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -803,28 +889,19 @@ function DayPracticeModal({
                   <p className="text-[12px] font-bold text-slate-600">Rate your confidence to move to the next question:</p>
                   <div className="flex gap-3">
                     <button
-                      onClick={() => {
-                        if (currentQ) onRateConfidence?.(currentQ.id, 'low');
-                        handleNext();
-                      }}
+                      onClick={() => handleRate('low')}
                       className="flex-1 py-2.5 bg-red-50 hover:bg-red-100 active:scale-[0.98] text-red-700 font-bold border border-red-200 rounded-xl text-[13px] transition-all"
                     >
                       👎 Low
                     </button>
                     <button
-                      onClick={() => {
-                        if (currentQ) onRateConfidence?.(currentQ.id, 'medium');
-                        handleNext();
-                      }}
+                      onClick={() => handleRate('medium')}
                       className="flex-1 py-2.5 bg-amber-50 hover:bg-amber-100 active:scale-[0.98] text-amber-700 font-bold border border-amber-200 rounded-xl text-[13px] transition-all"
                     >
                       ✊ Medium
                     </button>
                     <button
-                      onClick={() => {
-                        if (currentQ) onRateConfidence?.(currentQ.id, 'high');
-                        handleNext();
-                      }}
+                      onClick={() => handleRate('high')}
                       className="flex-1 py-2.5 bg-emerald-50 hover:bg-emerald-100 active:scale-[0.98] text-emerald-700 font-bold border border-emerald-200 rounded-xl text-[13px] transition-all"
                     >
                       🙌 High
