@@ -102,7 +102,10 @@ export async function runPrepKitPipeline(options: PipelineOptions): Promise<Prep
 
   // Step 6: Validate against Appendix A Schema
   const validation = validatePrepKit(rawKit);
-  return validation.kit;
+  if (validation.success) {
+    return validation.data as PrepKit;
+  }
+  return rawKit;
 }
 
 function extractCompanyName(urlStr: string): string {
