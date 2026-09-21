@@ -17,11 +17,33 @@ export default function MyKitsPage() {
 
   const fetchKits = async () => {
     try {
+      let serverKits: any[] = [];
       const res = await fetch('/api/kits');
       if (res.status === 401) { router.push('/login'); return; }
-      const data = await res.json();
-      if (data.kits) setSavedKits(data.kits);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.kits) serverKits = data.kits;
+      }
+
+      let localKits: any[] = [];
+      try {
+        const rawLocal = localStorage.getItem('preppilot_saved_kits_list');
+        if (rawLocal) localKits = JSON.parse(rawLocal);
+      } catch (e) {}
+
+      const kitMap = new Map();
+      [...serverKits, ...localKits].forEach(k => {
+        if (k && (k._id || k.id)) kitMap.set(k._id || k.id, k);
+      });
+
+      const merged = Array.from(kitMap.values());
+      setSavedKits(merged);
+      try { localStorage.setItem('preppilot_saved_kits_list', JSON.stringify(merged)); } catch (e) {}
     } catch (err) {
+      try {
+        const rawLocal = localStorage.getItem('preppilot_saved_kits_list');
+        if (rawLocal) setSavedKits(JSON.parse(rawLocal));
+      } catch (e) {}
     } finally {
       setLoading(false);
     }
@@ -32,9 +54,13 @@ export default function MyKitsPage() {
     setOpenMenuId(null);
     if (!confirm('Are you sure you want to delete this prep kit?')) return;
     try {
-      const res = await fetch(`/api/kits/${id}`, { method: 'DELETE' });
-      if (res.ok) setSavedKits(prev => prev.filter(k => k._id !== id));
+      await fetch(`/api/kits/${id}`, { method: 'DELETE' });
     } catch (err) {}
+    setSavedKits(prev => {
+      const updated = prev.filter(k => (k._id || k.id) !== id);
+      try { localStorage.setItem('preppilot_saved_kits_list', JSON.stringify(updated)); } catch (e) {}
+      return updated;
+    });
   };
 
   const calculateDaysRemaining = (createdAtStr: string, daysAvailable: number) => {

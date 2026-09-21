@@ -62,7 +62,21 @@ export default function CreateKitPage() {
 
       if (data.id) {
         if (data.kit) {
-          try { sessionStorage.setItem(`kit_${data.id}`, JSON.stringify(data.kit)); } catch (e) {}
+          try {
+            sessionStorage.setItem(`kit_${data.id}`, JSON.stringify(data.kit));
+            const rawLocal = localStorage.getItem('preppilot_saved_kits_list');
+            const existing = rawLocal ? JSON.parse(rawLocal) : [];
+            const newEntry = {
+              _id: data.id,
+              title: `${data.kit.role?.title || 'Role'} at ${data.kit.source?.company || 'Company'}`,
+              company: data.kit.source?.company || 'Company',
+              kit: data.kit,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString()
+            };
+            const filtered = existing.filter((k: any) => (k._id || k.id) !== data.id);
+            localStorage.setItem('preppilot_saved_kits_list', JSON.stringify([newEntry, ...filtered]));
+          } catch (e) {}
         }
         router.push(`/dashboard/kits/${data.id}`);
       }

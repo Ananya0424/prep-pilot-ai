@@ -22,7 +22,12 @@ export async function GET() {
     if (conn) {
       const dbKits = await Kit.find({ userId: session.userId }).sort({ updatedAt: -1 });
       const memKitsList = Array.from(memoryKits.values()).filter(k => k.userId === session.userId);
-      return NextResponse.json({ kits: [...dbKits, ...memKitsList] });
+      const kitMap = new Map();
+      [...memKitsList, ...dbKits].forEach(k => {
+        const id = k._id ? k._id.toString() : k.id;
+        if (id) kitMap.set(id, k);
+      });
+      return NextResponse.json({ kits: Array.from(kitMap.values()) });
     }
 
     const userKits = Array.from(memoryKits.values());
