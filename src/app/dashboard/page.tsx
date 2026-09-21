@@ -57,6 +57,13 @@ export default function DashboardPage() {
   };
 
   const totalQuestions = savedKits.reduce((a, k) => a + (k.kit?.questions?.length || 0), 0);
+  const totalScheduleDays = savedKits.reduce((a, k) => a + (k.kit?.schedule?.days?.length || 0), 0);
+  const totalCompletedDays = savedKits.reduce((a, k) => {
+    const doneCount = k.kit?.user_progress?.completed_days?.length || 0;
+    return a + doneCount;
+  }, 0);
+  const topicsCoveredPct = totalScheduleDays > 0 ? Math.round((totalCompletedDays / totalScheduleDays) * 100) : 0;
+
   const hasKits = savedKits.length > 0;
 
   const stats = [
@@ -85,8 +92,8 @@ export default function DashboardPage() {
     {
       icon: Layers,
       label: 'Topics Covered',
-      value: loadingKits ? '—' : hasKits ? '68%' : '0%',
-      sub: hasKits ? 'Keep practicing!' : 'Generate a kit first',
+      value: loadingKits ? '—' : `${topicsCoveredPct}%`,
+      sub: hasKits ? (totalCompletedDays > 0 ? `${totalCompletedDays} of ${totalScheduleDays} days done` : 'Start day practice') : 'Generate a kit first',
       href: '/dashboard/kits',
       iconColor: 'text-emerald-600',
       iconBg: 'bg-emerald-50',
