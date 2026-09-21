@@ -78,7 +78,7 @@ export default function KitDetailPage() {
         }
       } catch (e) {}
       setErrorMsg(err?.message || 'Could not fetch kit');
-    } fontally {
+    } finally {
       setLoading(false);
     }
   };
