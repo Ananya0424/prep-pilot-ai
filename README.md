@@ -2,6 +2,8 @@
 
 > Full-Stack AI Engineering Assessment Submission for Trao (`FS-AI-INTERVIEW-01`).
 
+🎥 **Video Walkthrough (3.5 min Scene-by-Scene Demonstration):** [Watch Video on Google Drive](https://drive.google.com/file/d/18bfLYE3pheYX3VKRevpzhFaFfcNhbL-n/view?usp=drivesdk)
+
 PrepPilot AI is an AI-powered web application and CLI pipeline that transforms job descriptions and company website URLs into structured, personalized interview preparation kits — including company briefs, role requirement breakdowns, categorized question banks, flashcards, interactive practice modes, and deterministic daily study schedules.
 
 ---
