@@ -65,10 +65,45 @@ export default function KitDetailPage() {
   const fetchKitDetails = async () => {
     try {
       setErrorMsg(null);
+
+      // 1. FIRST: Check client sessionStorage (instant match for newly generated kits)
+      try {
+        const storedSession = sessionStorage.getItem(`kit_${kitId}`);
+        if (storedSession) {
+          const parsed = JSON.parse(storedSession);
+          if (parsed && parsed.schedule) {
+            setKit(parsed);
+            if (parsed.user_progress?.confidence_ratings) setConfidenceMap(parsed.user_progress.confidence_ratings);
+            if (parsed.user_progress?.completed_days) setDoneDays(new Set(parsed.user_progress.completed_days));
+            if (parsed.user_progress?.day_scores) setDayScores(parsed.user_progress.day_scores);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (e) {}
+
+      // 2. SECOND: Check client localStorage saved kits list
+      try {
+        const rawLocal = localStorage.getItem('preppilot_saved_kits_list');
+        if (rawLocal) {
+          const list = JSON.parse(rawLocal);
+          const matched = list.find((k: any) => (k._id || k.id) === kitId);
+          if (matched && matched.kit) {
+            setKit(matched.kit);
+            if (matched.kit.user_progress?.confidence_ratings) setConfidenceMap(matched.kit.user_progress.confidence_ratings);
+            if (matched.kit.user_progress?.completed_days) setDoneDays(new Set(matched.kit.user_progress.completed_days));
+            if (matched.kit.user_progress?.day_scores) setDayScores(matched.kit.user_progress.day_scores);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (e) {}
+
+      // 3. THIRD: Fetch from Server API
       const res = await fetch(`/api/kits/${kitId}`);
       if (res.ok) {
         const data = await res.json();
-        if (data.kit) {
+        if (data.kit && !data.isFallback) {
           setKit(data.kit);
           if (data.kit.user_progress?.confidence_ratings) {
             setConfidenceMap(data.kit.user_progress.confidence_ratings);
@@ -82,19 +117,8 @@ export default function KitDetailPage() {
           return;
         }
       }
-      throw new Error('Failed to load kit details');
+      throw new Error('Kit not found');
     } catch (err: any) {
-      try {
-        const stored = sessionStorage.getItem(`kit_${kitId}`);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          setKit(parsed);
-          if (parsed.user_progress?.confidence_ratings) setConfidenceMap(parsed.user_progress.confidence_ratings);
-          if (parsed.user_progress?.completed_days) setDoneDays(new Set(parsed.user_progress.completed_days));
-          if (parsed.user_progress?.day_scores) setDayScores(parsed.user_progress.day_scores);
-          return;
-        }
-      } catch (e) {}
       setErrorMsg(err?.message || 'Could not fetch kit');
     } finally {
       setLoading(false);

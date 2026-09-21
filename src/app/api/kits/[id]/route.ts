@@ -80,33 +80,45 @@ const defaultFallbackKit: PrepKit = {
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
+    const kitId = params.id;
+
+    // 1. Check Memory Cache first (instant lookup for newly created kits)
+    const memKit = memoryKits.get(kitId);
+    if (memKit) {
+      return NextResponse.json({ id: memKit._id || kitId, kit: memKit.kit });
+    }
+
+    // 2. Check MongoDB
     const conn = await connectToDatabase();
     if (conn) {
       try {
-        const kitDoc = await Kit.findById(params.id);
+        const kitDoc = await Kit.findById(kitId);
         if (kitDoc) {
+          // Also prime memory cache for subsequent fast requests
+          memoryKits.set(kitId, {
+            _id: kitDoc._id.toString(),
+            userId: kitDoc.userId,
+            title: kitDoc.title,
+            company: kitDoc.company,
+            kit: kitDoc.kit,
+            createdAt: kitDoc.createdAt?.toISOString(),
+            updatedAt: kitDoc.updatedAt?.toISOString()
+          });
           return NextResponse.json({ id: kitDoc._id.toString(), kit: kitDoc.kit });
         }
       } catch (err) {}
     }
 
-    // Lookup in memory cache
-    const memKit = memoryKits.get(params.id);
-    if (memKit) {
-      return NextResponse.json({ id: memKit._id, kit: memKit.kit });
-    }
-
-    // If memory cache has any kit, return the most recent one as fallback
-    const allMemKits = Array.from(memoryKits.values());
-    if (allMemKits.length > 0) {
-      const lastKit = allMemKits[allMemKits.length - 1];
-      return NextResponse.json({ id: lastKit._id, kit: lastKit.kit });
-    }
-
-    // Never 404 - return default valid fallback kit
-    return NextResponse.json({ id: params.id, kit: defaultFallbackKit });
+    // 3. Return 404 with fallback kit if specific kit ID is not found in DB or Memory
+    return NextResponse.json(
+      { id: kitId, kit: defaultFallbackKit, isFallback: true, error: 'Kit not found' },
+      { status: 404 }
+    );
   } catch (err: any) {
-    return NextResponse.json({ id: params.id, kit: defaultFallbackKit });
+    return NextResponse.json(
+      { id: params.id, kit: defaultFallbackKit, isFallback: true, error: 'Server error' },
+      { status: 500 }
+    );
   }
 }
 
