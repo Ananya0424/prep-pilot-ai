@@ -95,10 +95,19 @@ export default function DashboardPage() {
     },
   ];
 
+  const hasPracticed = savedKits.some(k => {
+    if (k.kit?.user_progress?.completed_days && k.kit.user_progress.completed_days.length > 0) return true;
+    try {
+      const done = localStorage.getItem(`preppilot_kit_schedule_done_${k._id}`);
+      if (done && JSON.parse(done).length > 0) return true;
+    } catch {}
+    return false;
+  });
+
   const gettingStarted = [
     { label: 'Create your first Prep Kit', done: hasKits, href: '/dashboard/create' },
     { label: 'Review your questions & flashcards', done: hasKits, href: '/dashboard/kits' },
-    { label: 'Practice in mock interview mode', done: false, href: '/dashboard/kits' },
+    { label: 'Practice in mock interview mode', done: hasPracticed, href: '/dashboard/kits' },
   ];
 
   const recentKit = savedKits[0];
@@ -223,7 +232,7 @@ export default function DashboardPage() {
                 ) : (
                   <Circle className="w-5 h-5 text-slate-300 flex-shrink-0 group-hover:text-indigo-400 transition-colors" />
                 )}
-                <span className={`text-[13px] font-semibold flex-1 ${step.done ? 'text-emerald-700 line-through decoration-emerald-300' : 'text-slate-700'}`}>
+                <span className={`text-[13px] font-bold flex-1 ${step.done ? 'text-emerald-700' : 'text-slate-700'}`}>
                   {step.label}
                 </span>
                 {!step.done && (
