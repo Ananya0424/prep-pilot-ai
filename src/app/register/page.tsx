@@ -64,68 +64,66 @@ export default function RegisterPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 lg:px-10 pt-2 lg:pt-2 pb-6 flex items-start relative z-10">
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-start mt-0">
+      <main className="flex-1 w-full max-w-[1280px] mx-auto px-6 lg:px-10 pt-4 pb-12 flex items-center relative z-10">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* Left Side: Hero Content */}
-          <div className="lg:col-span-7 flex flex-col">
+          <div className="lg:col-span-6 flex flex-col pr-0 lg:pr-4">
             
-            <div className="inline-flex items-center gap-1.5 mb-3 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 w-fit">
-              <Sparkles className="w-3 h-3 text-brand-600" />
-              <span className="text-[10px] font-bold tracking-[0.1em] text-brand-600 uppercase">
+            <div className="inline-flex items-center gap-1.5 mb-3 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 w-fit">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="text-[10px] font-extrabold tracking-[0.1em] text-indigo-600 uppercase">
                 AI-Powered Interview Preparation
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-[44px] xl:text-[52px] font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-4">
-              Your Personalized<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-purple-500 to-pink-500">Interview Prep Kit</span><br />
-              with AI
+            <h1 className="text-3xl sm:text-4xl lg:text-[36px] xl:text-[40px] font-extrabold text-slate-900 tracking-tight leading-[1.15] mb-3">
+              Your Personalized <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">Interview Prep Kit</span> with AI
             </h1>
             
-            <p className="text-base lg:text-lg text-slate-500 font-medium leading-relaxed max-w-2xl mb-8">
+            <p className="text-[14px] sm:text-[15px] text-slate-500 font-medium leading-relaxed max-w-xl mb-6">
               Turn any job description and company website into a complete interview preparation kit — with research, tailored questions, flashcards and a day-by-day study plan.
             </p>
             
             {/* 4 Feature Items */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 max-w-2xl">
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                  <Building2 className="w-5 h-5" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl">
+              <div className="flex items-start gap-3 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl shadow-sm">
+                <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                  <Building2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-bold text-slate-900 mb-1">Company Research</h3>
-                  <p className="text-sm text-slate-500 leading-snug font-medium">Understand the company, its culture and hiring process</p>
+                  <h3 className="text-[13px] font-bold text-slate-900">Company Research</h3>
+                  <p className="text-[12px] text-slate-500 leading-snug font-medium mt-0.5">Understand company culture & hiring process</p>
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                  <Target className="w-5 h-5" />
+              <div className="flex items-start gap-3 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl shadow-sm">
+                <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                  <Target className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-bold text-slate-900 mb-1">Role Analysis</h3>
-                  <p className="text-sm text-slate-500 leading-snug font-medium">Identify key skills, responsibilities and expectations</p>
+                  <h3 className="text-[13px] font-bold text-slate-900">Role Analysis</h3>
+                  <p className="text-[12px] text-slate-500 leading-snug font-medium mt-0.5">Extract key skills & must-have expectations</p>
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
-                  <MessageSquare className="w-5 h-5" />
+              <div className="flex items-start gap-3 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl shadow-sm">
+                <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                  <MessageSquare className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-bold text-slate-900 mb-1">Smart Questions</h3>
-                  <p className="text-sm text-slate-500 leading-snug font-medium">Role-specific and behavioral interview questions</p>
+                  <h3 className="text-[13px] font-bold text-slate-900">Smart Questions</h3>
+                  <p className="text-[12px] text-slate-500 leading-snug font-medium mt-0.5">Role-specific & behavioral questions</p>
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
-                  <Calendar className="w-5 h-5" />
+              <div className="flex items-start gap-3 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl shadow-sm">
+                <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                  <Calendar className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-bold text-slate-900 mb-1">Study Schedule</h3>
-                  <p className="text-sm text-slate-500 leading-snug font-medium">Personalized preparation plan based on your timeline</p>
+                  <h3 className="text-[13px] font-bold text-slate-900">Study Schedule</h3>
+                  <p className="text-[12px] text-slate-500 leading-snug font-medium mt-0.5">Daily study plan tailored to your timeline</p>
                 </div>
               </div>
             </div>
@@ -133,8 +131,8 @@ export default function RegisterPage() {
           </div>
 
           {/* Right Side: Registration Card */}
-          <div className="lg:col-span-5 w-full flex justify-center lg:justify-end">
-            <div className="w-full max-w-[460px] bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-[20px] p-5 lg:p-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)]">
+          <div className="lg:col-span-6 w-full flex justify-center lg:justify-end">
+            <div className="w-full max-w-[440px] bg-white border border-slate-200 rounded-[24px] p-6 sm:p-7 shadow-xl shadow-slate-200/50">
               
               <div className="mb-5">
                 <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-xl shadow-sm mb-3 hidden sm:flex">
