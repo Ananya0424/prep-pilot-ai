@@ -7,8 +7,8 @@ import {
   BookOpen, Calendar, HelpCircle, Plus, Trash2, RefreshCw,
   Save, PlayCircle, FileText, CheckCircle2, ChevronDown,
   Globe, Briefcase, Clock, Sparkles, Layers, ArrowLeft,
-  CheckSquare, Square, Edit3, Move, Tag, AlertCircle, BarChart2,
-  TrendingDown, Minus, TrendingUp, X
+  CheckSquare, Square, Edit3, Tag, AlertCircle, BarChart2,
+  TrendingDown, Minus, TrendingUp, X, ArrowRight, Award
 } from 'lucide-react';
 import { PrepKit, Question, Flashcard, QuestionCategory, Requirement, RequirementKind, RequirementPriority } from '@/types/kit';
 
@@ -34,6 +34,13 @@ export default function KitDetailPage() {
   // Confidence & Schedule State
   const [confidenceMap, setConfidenceMap] = useState<ConfidenceMap>({});
   const [doneDays, setDoneDays] = useState<Set<number>>(new Set());
+
+  // Active Day Practice Modal State
+  const [activeDayPractice, setActiveDayPractice] = useState<{
+    dayNum: number;
+    dayFocus: string;
+    questions: Question[];
+  } | null>(null);
 
   useEffect(() => {
     fetchKitDetails();
@@ -71,7 +78,7 @@ export default function KitDetailPage() {
         }
       } catch (e) {}
       setErrorMsg(err?.message || 'Could not fetch kit');
-    } finally {
+    } fontally {
       setLoading(false);
     }
   };
@@ -197,6 +204,15 @@ export default function KitDetailPage() {
     setConfidenceMap(prev => {
       const next = { ...prev, [cardId]: c };
       try { localStorage.setItem(`${CONF_STORAGE_KEY}_${kitId}`, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+
+  const markDayDone = (dayNum: number) => {
+    setDoneDays(prev => {
+      const next = new Set(prev);
+      next.add(dayNum);
+      try { localStorage.setItem(`${DONE_DAYS_KEY}_${kitId}`, JSON.stringify([...next])); } catch {}
       return next;
     });
   };
@@ -580,6 +596,7 @@ export default function KitDetailPage() {
                 {kit.schedule?.days?.map((day) => {
                   const isDone = doneDays.has(day.day);
                   const linkedQs = (kit.questions || []).filter(q => day.question_ids?.includes(q.id));
+                  const cleanFocus = day.focus.replace(/^Day \d+:\s*/i, '');
 
                   return (
                     <div
@@ -593,7 +610,7 @@ export default function KitDetailPage() {
                           </span>
                           <div>
                             <h3 className={`text-[14px] font-bold ${isDone ? 'text-emerald-800 line-through decoration-emerald-300' : 'text-slate-900'}`}>
-                              Day {day.day}: {day.focus.replace(/^Day \d+:\s*/i, '')}
+                              Day {day.day}: {cleanFocus}
                             </h3>
                             <p className="text-[12px] font-medium text-slate-400">
                               Duration: {day.minutes} mins • {linkedQs.length} questions linked
@@ -601,15 +618,29 @@ export default function KitDetailPage() {
                           </div>
                         </div>
 
-                        <button
-                          onClick={() => toggleDayDone(day.day)}
-                          className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold border transition-colors ${
-                            isDone ? 'bg-emerald-100 border-emerald-200 text-emerald-700' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
-                          }`}
-                        >
-                          {isDone ? <CheckSquare className="w-3.5 h-3.5" /> : <Square className="w-3.5 h-3.5" />}
-                          {isDone ? 'Completed' : 'Mark Done'}
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setActiveDayPractice({
+                              dayNum: day.day,
+                              dayFocus: cleanFocus,
+                              questions: linkedQs.length > 0 ? linkedQs : (kit.questions || []).slice(0, 3)
+                            })}
+                            className="flex items-center gap-1.5 px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[11px] font-bold transition-all shadow-sm"
+                          >
+                            <PlayCircle className="w-3.5 h-3.5" />
+                            Practice Day {day.day}
+                          </button>
+
+                          <button
+                            onClick={() => toggleDayDone(day.day)}
+                            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold border transition-colors ${
+                              isDone ? 'bg-emerald-100 border-emerald-200 text-emerald-700' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                            }`}
+                          >
+                            {isDone ? <CheckSquare className="w-3.5 h-3.5" /> : <Square className="w-3.5 h-3.5" />}
+                            {isDone ? 'Completed' : 'Mark Done'}
+                          </button>
+                        </div>
                       </div>
 
                       {linkedQs.length > 0 && (
@@ -641,6 +672,164 @@ export default function KitDetailPage() {
         </div>
 
       </div>
+
+      {/* Sequential Day Practice Modal */}
+      {activeDayPractice && (
+        <DayPracticeModal
+          dayNum={activeDayPractice.dayNum}
+          dayFocus={activeDayPractice.dayFocus}
+          questions={activeDayPractice.questions}
+          totalDays={kit.schedule?.days?.length || 7}
+          onClose={() => setActiveDayPractice(null)}
+          onCompleteDay={() => {
+            markDayDone(activeDayPractice.dayNum);
+          }}
+          onNextDay={() => {
+            markDayDone(activeDayPractice.dayNum);
+            const nextDayNum = activeDayPractice.dayNum + 1;
+            const nextDay = kit.schedule?.days?.find(d => d.day === nextDayNum);
+            if (nextDay) {
+              const nextLinked = (kit.questions || []).filter(q => nextDay.question_ids?.includes(q.id));
+              setActiveDayPractice({
+                dayNum: nextDayNum,
+                dayFocus: nextDay.focus.replace(/^Day \d+:\s*/i, ''),
+                questions: nextLinked.length > 0 ? nextLinked : (kit.questions || []).slice(0, 3)
+              });
+            } else {
+              setActiveDayPractice(null);
+            }
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+// ─── Sub-Component: DayPracticeModal ─────────────────────────────────────────
+function DayPracticeModal({
+  dayNum, dayFocus, questions, totalDays, onClose, onCompleteDay, onNextDay,
+}: {
+  dayNum: number;
+  dayFocus: string;
+  questions: Question[];
+  totalDays: number;
+  onClose: () => void;
+  onCompleteDay: () => void;
+  onNextDay: () => void;
+}) {
+  const [qIdx, setQIdx] = useState(0);
+  const [revealed, setRevealed] = useState(false);
+  const [finished, setFinished] = useState(false);
+
+  const currentQ = questions[qIdx];
+  const isLast = qIdx === questions.length - 1;
+
+  const handleNext = () => {
+    if (!isLast) {
+      setQIdx(i => i + 1);
+      setRevealed(false);
+    } else {
+      setFinished(true);
+      onCompleteDay();
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-[24px] shadow-2xl w-full max-w-xl p-7 relative space-y-5"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div>
+            <span className="text-[11px] font-bold uppercase tracking-widest text-indigo-600">Day {dayNum} Practice Session</span>
+            <h3 className="text-[16px] font-bold text-slate-900 mt-0.5">{dayFocus}</h3>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl transition-colors">
+            <X className="w-5 h-5 text-slate-400" />
+          </button>
+        </div>
+
+        {finished ? (
+          /* Day Completed Celebration */
+          <div className="text-center py-6 space-y-4">
+            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
+              <Award className="w-8 h-8" />
+            </div>
+            <div>
+              <h2 className="text-[20px] font-extrabold text-slate-900">Day {dayNum} Completed! 🎉</h2>
+              <p className="text-[13px] text-slate-500 font-medium mt-1">
+                Great job! All {questions.length} topic questions for Day {dayNum} have been reviewed.
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <button
+                onClick={onClose}
+                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[13px] font-bold rounded-xl transition-colors"
+              >
+                Close & Review
+              </button>
+              {dayNum < totalDays && (
+                <button
+                  onClick={onNextDay}
+                  className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-bold rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
+                >
+                  Start Day {dayNum + 1} Practice <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          /* Question Stepper Flow */
+          <div className="space-y-4">
+            <div className="flex justify-between text-[12px] font-bold text-slate-400">
+              <span>Question {qIdx + 1} of {questions.length}</span>
+              <span className="text-indigo-600 uppercase">{currentQ?.category}</span>
+            </div>
+
+            {/* Progress bar */}
+            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-indigo-600 rounded-full transition-all duration-300"
+                style={{ width: `${((qIdx + 1) / questions.length) * 100}%` }}
+              />
+            </div>
+
+            {/* Prompt Card */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Question Prompt</p>
+              <p className="text-[15px] font-bold text-slate-900 leading-snug">{currentQ?.prompt}</p>
+            </div>
+
+            {/* Answer Outline Box */}
+            {revealed ? (
+              <div className="bg-indigo-50/70 border border-indigo-200 rounded-2xl p-5 space-y-2 animate-fadeIn">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Answer Key & Outline</p>
+                <p className="text-[13px] font-medium text-slate-800 leading-relaxed whitespace-pre-line">{currentQ?.answer_outline}</p>
+              </div>
+            ) : (
+              <button
+                onClick={() => setRevealed(true)}
+                className="w-full py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold rounded-xl text-[13px] transition-colors"
+              >
+                Reveal Answer Key & Outline
+              </button>
+            )}
+
+            {revealed && (
+              <button
+                onClick={handleNext}
+                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-[13px] transition-all shadow-sm flex items-center justify-center gap-2"
+              >
+                {isLast ? 'Complete Day Practice ✨' : 'Next Question →'}
+              </button>
+            )}
+          </div>
+        )}
+      </motion.div>
     </div>
   );
 }
