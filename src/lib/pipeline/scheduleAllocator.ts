@@ -1,9 +1,8 @@
 import { Question, Requirement, Schedule, ScheduleDay } from '@/types/kit';
 
 /**
- * DETERMINISTIC (NON-LLM) SCHEDULE ALLOCATOR
- * Arithmetic allocation of questions across requested days_available.
- * Priority: Harder & Must-have items land earlier.
+ * DETERMINISTIC SCHEDULE ALLOCATOR
+ * Groups questions by topic & allocates multiple questions per day.
  */
 export function buildDeterministicSchedule(
   daysAvailable: number,
@@ -15,27 +14,34 @@ export function buildDeterministicSchedule(
   if (questions.length === 0) {
     const days: ScheduleDay[] = Array.from({ length: safeDays }, (_, i) => ({
       day: i + 1,
-      focus: `Day ${i + 1}: General Preparation`,
+      focus: `General Review & Interview Prep`,
       question_ids: [],
       minutes: 45,
     }));
     return { days_available: safeDays, days };
   }
 
-  // Create requirement priority lookup
-  const reqPriorityMap = new Map<string, 'must' | 'nice'>();
-  requirements.forEach(r => reqPriorityMap.set(r.id, r.priority));
+  // Group questions by category/topic
+  const topicMap: Record<string, Question[]> = {
+    technical: [],
+    'system-design': [],
+    behavioural: [],
+    'company-fit': []
+  };
 
-  // Sort questions: Must-have first, then Difficulty (3 > 2 > 1)
-  const sortedQuestions = [...questions].sort((a, b) => {
-    const aMust = a.requirement_ids.some(id => reqPriorityMap.get(id) === 'must');
-    const bMust = b.requirement_ids.some(id => reqPriorityMap.get(id) === 'must');
-
-    if (aMust && !bMust) return -1;
-    if (!aMust && bMust) return 1;
-
-    return b.difficulty - a.difficulty; // Higher difficulty earlier
+  questions.forEach(q => {
+    const cat = q.category || 'technical';
+    if (!topicMap[cat]) topicMap[cat] = [];
+    topicMap[cat].push(q);
   });
+
+  // Flattened ordered question list (Technical & System Design early, Behavioural & Company Fit later)
+  const orderedQuestions = [
+    ...(topicMap['technical'] || []),
+    ...(topicMap['system-design'] || []),
+    ...(topicMap['behavioural'] || []),
+    ...(topicMap['company-fit'] || [])
+  ];
 
   // Initialize days
   const days: ScheduleDay[] = Array.from({ length: safeDays }, (_, i) => ({
@@ -45,32 +51,39 @@ export function buildDeterministicSchedule(
     minutes: 0,
   }));
 
-  // Sequential chunking: earlier days get the front of the sorted array (harder & must-have)
-  const itemsPerDay = Math.ceil(sortedQuestions.length / safeDays);
-  
-  sortedQuestions.forEach((q, idx) => {
-    // Determine which day this goes to sequentially
-    const targetDayIndex = Math.min(Math.floor(idx / itemsPerDay), safeDays - 1);
-    days[targetDayIndex].question_ids.push(q.id);
+  // Assign questions to days ensuring multiple questions per day
+  const targetPerDay = Math.max(2, Math.ceil(orderedQuestions.length / safeDays));
 
-    // Duration based on difficulty: diff 3 = 45m, diff 2 = 30m, diff 1 = 20m
-    const qMinutes = q.difficulty === 3 ? 45 : q.difficulty === 2 ? 30 : 20;
-    days[targetDayIndex].minutes += qMinutes;
+  orderedQuestions.forEach((q, idx) => {
+    const targetDayIndex = Math.min(Math.floor(idx / targetPerDay), safeDays - 1);
+    days[targetDayIndex].question_ids.push(q.id);
   });
 
-  // Ensure every day has a non-zero integer duration and clear focus title
+  // Ensure later empty or 1-item days get linked review questions from earlier topics
   days.forEach((dayObj, i) => {
-    if (dayObj.minutes === 0) dayObj.minutes = 30; // fallback integer minutes
+    if (dayObj.question_ids.length === 0) {
+      // Pick 2-3 questions from all available questions for review
+      const reviewQs = questions.slice((i * 2) % questions.length, ((i * 2) + 3) % questions.length || questions.length);
+      dayObj.question_ids = reviewQs.map(q => q.id);
+    }
 
-    // Determine focus title from question categories in that day
+    // Calculate total duration (each question ~20-30 mins)
     const dayQuestions = questions.filter(q => dayObj.question_ids.includes(q.id));
-    const categories = Array.from(new Set(dayQuestions.map(q => q.category)));
+    const totalMins = dayQuestions.reduce((sum, q) => sum + (q.difficulty === 3 ? 45 : q.difficulty === 2 ? 30 : 20), 0);
+    dayObj.minutes = Math.max(45, totalMins);
 
-    if (categories.length > 0) {
-      const catTitle = categories.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(' & ');
-      dayObj.focus = `Day ${i + 1}: ${catTitle}`;
+    // Build clean Topic Focus title WITHOUT duplicate "Day X:"
+    const categories = Array.from(new Set(dayQuestions.map(q => q.category)));
+    if (categories.includes('system-design')) {
+      dayObj.focus = 'System Design & High Availability Architecture';
+    } else if (categories.includes('technical')) {
+      dayObj.focus = 'Core Technical Concepts & API Development';
+    } else if (categories.includes('behavioural')) {
+      dayObj.focus = 'Behavioural & Leadership Scenarios';
+    } else if (categories.includes('company-fit')) {
+      dayObj.focus = 'Company Culture & Fit Alignment';
     } else {
-      dayObj.focus = `Day ${i + 1}: General Review & Prep`;
+      dayObj.focus = 'Full-Stack Review & Practice Session';
     }
   });
 

@@ -593,7 +593,7 @@ export default function KitDetailPage() {
                           </span>
                           <div>
                             <h3 className={`text-[14px] font-bold ${isDone ? 'text-emerald-800 line-through decoration-emerald-300' : 'text-slate-900'}`}>
-                              Day {day.day}: {day.focus}
+                              Day {day.day}: {day.focus.replace(/^Day \d+:\s*/i, '')}
                             </h3>
                             <p className="text-[12px] font-medium text-slate-400">
                               Duration: {day.minutes} mins • {linkedQs.length} questions linked
