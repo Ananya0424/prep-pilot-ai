@@ -19,12 +19,8 @@ export function ClientSidebar() {
   };
 
   const navItems = [
-    { name: 'Overview', icon: Home, href: '/dashboard' },
-    { name: 'My Prep Kits', icon: Folder, href: '/dashboard#kits' },
-    { name: 'Create Kit', icon: PlusSquare, href: '/dashboard#create' },
-    { name: 'Flashcards', icon: Layers, href: '#' },
-    { name: 'Practice', icon: PlayCircle, href: '#' },
-    { name: 'Schedule', icon: Calendar, href: '#' },
+    { name: 'Dashboard', icon: Home, href: '/dashboard' },
+    { name: 'Create Kit', icon: PlusSquare, href: '/dashboard/create' },
   ];
 
   return (
@@ -56,7 +52,7 @@ export function ClientSidebar() {
         {/* Navigation */}
         <nav className="flex-1 px-4 py-4 space-y-1">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || (pathname === '/dashboard' && item.href.startsWith('/dashboard'));
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.name}

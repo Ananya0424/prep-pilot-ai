@@ -200,125 +200,6 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* Create New Kit */}
-        <section id="create">
-          <div className="mb-5">
-            <h3 className="text-lg font-bold text-slate-900 mb-1">Create a new Prep Kit</h3>
-            <p className="text-sm text-slate-500 font-medium">Turn a job description into a personalized interview preparation plan.</p>
-          </div>
-          
-          <div className="bg-white rounded-[20px] p-6 sm:p-8 shadow-sm border border-indigo-100 relative group transition-all duration-500 overflow-hidden">
-            <div className="absolute inset-0 rounded-[20px] ring-1 ring-inset ring-indigo-500/10 pointer-events-none group-hover:ring-indigo-500/20 transition-all duration-500"></div>
-            
-            {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-sm flex items-start space-x-3 text-red-700 font-medium">
-                <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-                <p>{error}</p>
-              </div>
-            )}
-
-            {generating ? (
-              <div className="py-10 max-w-md mx-auto">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center flex-shrink-0">
-                    <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-900">Building your Prep Kit...</h3>
-                  </div>
-                </div>
-
-                <div className="space-y-4 ml-2">
-                  {generationSteps.map((step, index) => {
-                    const isCompleted = progressStep > index;
-                    const isCurrent = progressStep === index;
-                    
-                    return (
-                      <div key={index} className="flex items-center gap-3">
-                        {isCompleted ? (
-                          <CheckCircle2 className="w-5 h-5 text-indigo-600" />
-                        ) : isCurrent ? (
-                          <div className="relative flex items-center justify-center w-5 h-5">
-                             <Circle className="w-5 h-5 text-indigo-200" />
-                             <div className="w-2.5 h-2.5 bg-indigo-600 rounded-full animate-pulse absolute" />
-                          </div>
-                        ) : (
-                          <Circle className="w-5 h-5 text-slate-200" />
-                        )}
-                        <span className={`text-[14px] font-medium ${isCompleted ? 'text-slate-700' : isCurrent ? 'text-indigo-700 font-semibold' : 'text-slate-400'}`}>
-                          {step}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleGenerate} className="space-y-6">
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
-                    Job Description
-                  </label>
-                  <textarea
-                    required
-                    rows={4}
-                    value={jobDescription}
-                    onChange={(e) => setJobDescription(e.target.value)}
-                    placeholder="Paste the job description here..."
-                    className="w-full px-4 py-3 bg-[#F8F9FF] border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-[14px] font-medium focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      Company Website
-                    </label>
-                    <input
-                      type="url"
-                      required
-                      value={companyUrl}
-                      onChange={(e) => setCompanyUrl(e.target.value)}
-                      placeholder="https://company.com"
-                      className="w-full px-4 py-3 bg-[#F8F9FF] border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-[14px] font-medium focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      Days Until Interview
-                    </label>
-                    <div className="relative">
-                       <input
-                        type="number"
-                        min={1}
-                        max={60}
-                        required
-                        value={daysAvailable}
-                        onChange={(e) => setDaysAvailable(Number(e.target.value))}
-                        className="w-full pl-4 pr-16 py-3 bg-[#F8F9FF] border border-slate-200 rounded-xl text-slate-900 text-[14px] font-medium focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all"
-                      />
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 font-medium pointer-events-none">days</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2 flex flex-col sm:flex-row sm:items-center gap-4">
-                  <button
-                    type="submit"
-                    className="w-full sm:w-auto px-8 py-3 bg-indigo-900 hover:bg-indigo-800 text-white font-bold rounded-xl transition-all duration-300 text-[14px] shadow-sm flex items-center justify-center gap-2"
-                  >
-                    <span>Generate Prep Kit ✨</span>
-                  </button>
-                  <p className="text-[12px] text-slate-500 font-medium max-w-sm">
-                    AI will research the company, analyze requirements, generate interview questions and create your preparation schedule.
-                  </p>
-                </div>
-              </form>
-            )}
-          </div>
-        </section>
-
         {loadingKits ? (
           <div className="py-20 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-slate-300" /></div>
         ) : savedKits.length === 0 ? (
@@ -331,10 +212,7 @@ export default function DashboardPage() {
               Paste a job description above and let PrepPilot build your personalized preparation kit.
             </p>
             <button 
-              onClick={() => {
-                document.getElementById('create')?.scrollIntoView({ behavior: 'smooth' });
-                // We could also focus the textarea here
-              }}
+              onClick={() => router.push('/dashboard/create')}
               className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2"
             >
               Create Your First Kit ✨
