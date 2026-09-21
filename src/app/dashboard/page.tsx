@@ -323,13 +323,22 @@ export default function DashboardPage() {
           <div className="py-20 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-slate-300" /></div>
         ) : savedKits.length === 0 ? (
           <section className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 flex flex-col items-center text-center">
-            <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-5">
               <Folder className="w-8 h-8 text-indigo-400" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-1">Ready to prepare for your next interview?</h3>
-            <p className="text-sm text-slate-500 font-medium max-w-sm mb-6">
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Ready to prepare for your next interview?</h3>
+            <p className="text-sm text-slate-500 font-medium max-w-sm mb-8">
               Paste a job description above and let PrepPilot build your personalized preparation kit.
             </p>
+            <button 
+              onClick={() => {
+                document.getElementById('create')?.scrollIntoView({ behavior: 'smooth' });
+                // We could also focus the textarea here
+              }}
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2"
+            >
+              Create Your First Kit ✨
+            </button>
           </section>
         ) : (
           <div className="flex flex-col lg:flex-row gap-8">
