@@ -5,6 +5,9 @@ import { Kit } from '@/models/Kit';
 import { runPrepKitPipeline } from '@/lib/pipeline';
 import { memoryKits } from '@/lib/memoryStore';
 
+export const maxDuration = 60;
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     let session = await getSessionUser();

@@ -7,6 +7,9 @@ import { buildDeterministicSchedule } from '@/lib/pipeline/scheduleAllocator';
 import { PrepKit, Question } from '@/types/kit';
 import { memoryKits } from '@/lib/memoryStore';
 
+export const maxDuration = 60;
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   try {
     const { section, currentKit } = await req.json();
