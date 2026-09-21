@@ -10,8 +10,8 @@ import {
 
 const navItems = [
   { name: 'Overview', icon: LayoutDashboard, href: '/dashboard' },
-  { name: 'My Prep Kits', icon: Folder, href: '/dashboard/kits' },
   { name: 'Create Kit', icon: PlusSquare, href: '/dashboard/create' },
+  { name: 'My Prep Kits', icon: Folder, href: '/dashboard/kits' },
   { name: 'Flashcards', icon: Layers, href: '/dashboard/kits' },
   { name: 'Practice', icon: PlayCircle, href: '/dashboard/kits' },
   { name: 'Schedule', icon: Calendar, href: '/dashboard/kits' },
