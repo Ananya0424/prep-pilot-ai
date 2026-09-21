@@ -70,6 +70,15 @@ export default function KitDetailPage() {
         const data = await res.json();
         if (data.kit) {
           setKit(data.kit);
+          if (data.kit.user_progress?.confidence_ratings) {
+            setConfidenceMap(data.kit.user_progress.confidence_ratings);
+          }
+          if (data.kit.user_progress?.completed_days) {
+            setDoneDays(new Set(data.kit.user_progress.completed_days));
+          }
+          if (data.kit.user_progress?.day_scores) {
+            setDayScores(data.kit.user_progress.day_scores);
+          }
           return;
         }
       }
@@ -78,7 +87,11 @@ export default function KitDetailPage() {
       try {
         const stored = sessionStorage.getItem(`kit_${kitId}`);
         if (stored) {
-          setKit(JSON.parse(stored));
+          const parsed = JSON.parse(stored);
+          setKit(parsed);
+          if (parsed.user_progress?.confidence_ratings) setConfidenceMap(parsed.user_progress.confidence_ratings);
+          if (parsed.user_progress?.completed_days) setDoneDays(new Set(parsed.user_progress.completed_days));
+          if (parsed.user_progress?.day_scores) setDayScores(parsed.user_progress.day_scores);
           return;
         }
       } catch (e) {}
@@ -204,11 +217,34 @@ export default function KitDetailPage() {
     handleSaveKit(updated);
   };
 
-  // ─── Confidence / Schedule Handlers ─────────────────────────────────────────
+  // ─── Confidence / Schedule Handlers (DB Sync + Local Cache) ──────────────────
+  const syncProgressToDatabase = (
+    newConf?: ConfidenceMap,
+    newDoneDays?: Set<number>,
+    newScores?: Record<number, number>
+  ) => {
+    if (!kit) return;
+    const targetConf = newConf !== undefined ? newConf : confidenceMap;
+    const targetDays = newDoneDays !== undefined ? Array.from(newDoneDays) : Array.from(doneDays);
+    const targetScores = newScores !== undefined ? newScores : dayScores;
+
+    const updated: PrepKit = {
+      ...kit,
+      user_progress: {
+        confidence_ratings: targetConf,
+        completed_days: targetDays,
+        day_scores: targetScores,
+      },
+    };
+    setKit(updated);
+    handleSaveKit(updated);
+  };
+
   const updateConfidence = (cardId: string, c: Confidence) => {
     setConfidenceMap(prev => {
       const next = { ...prev, [cardId]: c };
       try { localStorage.setItem(`${CONF_STORAGE_KEY}_${kitId}`, JSON.stringify(next)); } catch {}
+      syncProgressToDatabase(next, undefined, undefined);
       return next;
     });
   };
@@ -218,6 +254,7 @@ export default function KitDetailPage() {
       const next = new Set(prev);
       next.add(dayNum);
       try { localStorage.setItem(`${DONE_DAYS_KEY}_${kitId}`, JSON.stringify([...next])); } catch {}
+      syncProgressToDatabase(undefined, next, undefined);
       return next;
     });
   };
@@ -227,6 +264,7 @@ export default function KitDetailPage() {
       const next = new Set(prev);
       next.has(dayNum) ? next.delete(dayNum) : next.add(dayNum);
       try { localStorage.setItem(`${DONE_DAYS_KEY}_${kitId}`, JSON.stringify([...next])); } catch {}
+      syncProgressToDatabase(undefined, next, undefined);
       return next;
     });
   };
@@ -235,6 +273,7 @@ export default function KitDetailPage() {
     setDayScores(prev => {
       const next = { ...prev, [dayNum]: scorePct };
       try { localStorage.setItem(`${DAY_SCORES_KEY}_${kitId}`, JSON.stringify(next)); } catch {}
+      syncProgressToDatabase(undefined, undefined, next);
       return next;
     });
   };
@@ -362,6 +401,39 @@ export default function KitDetailPage() {
           {/* ── 1. OVERVIEW TAB ── */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
+
+              {/* 2nd-Pass Requirement Coverage Status Banner */}
+              <div className="bg-white border border-indigo-100 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-extrabold shadow-sm flex-shrink-0">
+                    <CheckCircle2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-[15px] font-extrabold text-slate-900">
+                        Automated Second-Pass Coverage Verification
+                      </h3>
+                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-md border border-indigo-100">
+                        Passes: {kit.coverage?.passes || 1}
+                      </span>
+                    </div>
+                    <p className="text-[12px] font-medium text-slate-500 mt-0.5">
+                      {(kit.coverage?.uncovered_requirement_ids?.length || 0) === 0
+                        ? '✓ All extracted must-have job requirements covered by generated questions & flashcards.'
+                        : `⚠️ ${kit.coverage?.uncovered_requirement_ids?.length} requirement(s) uncovered in initial pass.`}
+                    </p>
+                  </div>
+                </div>
+
+                <span className={`text-[12px] font-extrabold px-3 py-1 rounded-xl border flex-shrink-0 ${
+                  (kit.coverage?.uncovered_requirement_ids?.length || 0) === 0
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                }`}>
+                  {(kit.coverage?.uncovered_requirement_ids?.length || 0) === 0 ? '100% Full Coverage' : 'Coverage Gaps Identified'}
+                </span>
+              </div>
+
               <div className="flex items-center justify-between">
                 <h2 className="text-[16px] font-bold text-slate-900">Company Brief & Role Info</h2>
                 <button
@@ -644,9 +716,9 @@ export default function KitDetailPage() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => {
-                              const pool = linkedQs.length >= 5
+                              const pool = linkedQs.length > 0
                                 ? linkedQs
-                                : [...linkedQs, ...(kit.questions || []).filter(q => !linkedQs.some(l => l.id === q.id))].slice(0, 5);
+                                : (kit.questions || []).slice(0, 3);
                               setActiveDayPractice({
                                 dayNum: day.day,
                                 dayFocus: cleanFocus,

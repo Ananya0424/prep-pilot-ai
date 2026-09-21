@@ -61,9 +61,10 @@ export interface Schedule {
   days: ScheduleDay[];
 }
 
-export interface Coverage {
-  uncovered_requirement_ids: string[];
-  passes: number;
+export interface UserProgress {
+  confidence_ratings?: Record<string, 'low' | 'medium' | 'high'>;
+  completed_days?: number[];
+  day_scores?: Record<number, number>;
 }
 
 export interface PrepKit {
@@ -74,6 +75,7 @@ export interface PrepKit {
   flashcards: Flashcard[];
   schedule: Schedule;
   coverage: Coverage;
+  user_progress?: UserProgress;
 }
 
 // Appendix B Types
