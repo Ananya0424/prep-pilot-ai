@@ -56,11 +56,11 @@ export async function runPrepKitPipeline(options: PipelineOptions): Promise<Prep
     })),
     generateQuestionsAndFlashcards(roleInfo.requirements, crawlResult.summaryText, 1, 1).catch(() => ({
       questions: [
-        { id: 'q1', prompt: 'Describe your experience with software architecture and API design.', category: 'technical' as const, difficulty: 2 as const, requirement_ids: ['r1'] },
-        { id: 'q2', prompt: 'How do you approach debugging complex production issues?', category: 'technical' as const, difficulty: 2 as const, requirement_ids: ['r2'] },
-        { id: 'q3', prompt: 'Give an example of a project where you collaborated under tight deadlines.', category: 'behavioural' as const, difficulty: 2 as const, requirement_ids: ['r3'] },
-        { id: 'q4', prompt: 'How would you scale a web application handling high concurrent traffic?', category: 'system-design' as const, difficulty: 3 as const, requirement_ids: ['r1'] },
-        { id: 'q5', prompt: 'Why are you interested in joining our company?', category: 'company-fit' as const, difficulty: 1 as const, requirement_ids: ['r3'] }
+        { id: 'q1', prompt: 'Describe your experience with software architecture and API design.', answer_outline: 'Explain system components, protocols, REST, scalability, and error handling.', category: 'technical' as const, difficulty: 2 as const, requirement_ids: ['r1'] },
+        { id: 'q2', prompt: 'How do you approach debugging complex production issues?', answer_outline: 'Detail monitoring, log analysis, reproducing issues, hotfixes, and post-mortems.', category: 'technical' as const, difficulty: 2 as const, requirement_ids: ['r2'] },
+        { id: 'q3', prompt: 'Give an example of a project where you collaborated under tight deadlines.', answer_outline: 'Use STAR method: Situation, Task, Action taken, and measurable Result.', category: 'behavioural' as const, difficulty: 2 as const, requirement_ids: ['r3'] },
+        { id: 'q4', prompt: 'How would you scale a web application handling high concurrent traffic?', answer_outline: 'Discuss load balancing, caching, database indexing, horizontal scaling, and CDN.', category: 'system-design' as const, difficulty: 3 as const, requirement_ids: ['r1'] },
+        { id: 'q5', prompt: 'Why are you interested in joining our company?', answer_outline: 'Align technical passion, company mission, products, and career growth objectives.', category: 'company-fit' as const, difficulty: 1 as const, requirement_ids: ['r3'] }
       ],
       flashcards: [
         { id: 'f1', front: 'What is API Idempotency?', back: 'Operations that produce the same result regardless of execution count.', requirement_ids: ['r2'] },
