@@ -119,6 +119,13 @@ export default function DashboardPage() {
   const totalQuestions = savedKits.reduce((acc, kit) => acc + (kit.kit?.questions?.length || 0), 0);
   const recentKit = savedKits[0];
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   const generationSteps = [
     'Analyzing job description',
     'Researching company context',
@@ -159,7 +166,7 @@ export default function DashboardPage() {
           
           <div className="relative z-10 space-y-2">
             <h2 className="text-xl lg:text-[22px] font-extrabold text-slate-900 tracking-tight">
-              Good morning, {userName} <span className="inline-block">👋</span>
+              {getGreeting()}, {userName} <span className="inline-block">👋</span>
             </h2>
             <p className="text-slate-500 font-medium text-sm lg:text-base max-w-xl">
               Prepare smarter. Walk into your next interview with confidence.
