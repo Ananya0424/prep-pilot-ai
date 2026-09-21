@@ -566,6 +566,17 @@ export default function KitDetailPage() {
           {/* ── 3. QUESTIONS TAB ── */}
           {activeTab === 'questions' && (
             <div className="space-y-6">
+              {/* Informative Explanation Banner */}
+              <div className="bg-indigo-50/70 border border-indigo-100 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-indigo-600">In-Depth Interview Question Bank</span>
+                  <h3 className="text-[14px] font-extrabold text-slate-900 mt-0.5">Comprehensive questions with structured answer key outlines</h3>
+                  <p className="text-[12px] text-slate-500 font-medium mt-0.5">
+                    Designed for deep interview preparation. Includes difficulty levels, job requirement linkages, and customizable answer frameworks.
+                  </p>
+                </div>
+              </div>
+
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-[16px] font-bold text-slate-900">Question Bank</h2>
@@ -621,6 +632,17 @@ export default function KitDetailPage() {
           {/* ── 4. FLASHCARDS TAB ── */}
           {activeTab === 'flashcards' && (
             <div className="space-y-6">
+              {/* Informative Explanation Banner */}
+              <div className="bg-violet-50/70 border border-violet-100 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-violet-600">Active Memory Recall Deck</span>
+                  <h3 className="text-[14px] font-extrabold text-slate-900 mt-0.5">Quick revision cards for key technical terms & concepts</h3>
+                  <p className="text-[12px] text-slate-500 font-medium mt-0.5">
+                    Tap cards to flip between prompt and 1-2 sentence key answer takeaways. Use confidence-based prioritization for fast memory review.
+                  </p>
+                </div>
+              </div>
+
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-[16px] font-bold text-slate-900">Flashcard Deck</h2>
