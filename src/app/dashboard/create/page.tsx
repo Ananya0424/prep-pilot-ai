@@ -60,7 +60,12 @@ export default function CreateKitPage() {
         throw new Error(data.error || 'Failed to generate kit');
       }
 
-      router.push(`/kit/${data.id}`);
+      if (data.id) {
+        if (data.kit) {
+          try { sessionStorage.setItem(`kit_${data.id}`, JSON.stringify(data.kit)); } catch (e) {}
+        }
+        router.push(`/dashboard/kits/${data.id}`);
+      }
     } catch (err: any) {
       setError(err?.message || 'Generation failed. Please check your inputs and try again.');
       setGenerating(false);

@@ -54,10 +54,22 @@ export default function KitDetailPage() {
     try {
       setErrorMsg(null);
       const res = await fetch(`/api/kits/${kitId}`);
-      if (!res.ok) throw new Error('Failed to load kit details');
-      const data = await res.json();
-      setKit(data.kit);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.kit) {
+          setKit(data.kit);
+          return;
+        }
+      }
+      throw new Error('Failed to load kit details');
     } catch (err: any) {
+      try {
+        const stored = sessionStorage.getItem(`kit_${kitId}`);
+        if (stored) {
+          setKit(JSON.parse(stored));
+          return;
+        }
+      } catch (e) {}
       setErrorMsg(err?.message || 'Could not fetch kit');
     } finally {
       setLoading(false);
