@@ -160,9 +160,14 @@ function generateSmartFallbackResponse(prompt: string, systemPrompt?: string): s
       { prompt: 'Why do you want to join our engineering team and what drives your work?', category: 'company-fit', difficulty: 1, requirement_ids: ['r4'] }
     ],
     flashcards: [
-      { front: 'What is REST API idempotency?', back: 'Idempotent HTTP methods (GET, PUT, DELETE) produce the same result regardless of how many times they are called.' },
+      { front: 'What is REST API idempotency?', back: 'Idempotent HTTP methods (GET, PUT, DELETE) produce the same result regardless of execution frequency.' },
       { front: 'Difference between SQL and NoSQL databases?', back: 'SQL databases are relational and structured with schemas, whereas NoSQL are document/key-value based and horizontally scalable.' },
-      { front: 'What is CORS?', back: 'Cross-Origin Resource Sharing is a browser security mechanism restricting web pages from making API calls to a different domain.' }
+      { front: 'What is CORS (Cross-Origin Resource Sharing)?', back: 'A browser security mechanism that uses HTTP headers to determine whether to allow cross-origin request access.' },
+      { front: 'What is Node.js Event Loop?', back: 'A single-threaded loop that offloads non-blocking asynchronous operations to the kernel and executes callbacks.' },
+      { front: 'What is React Virtual DOM?', back: 'A lightweight in-memory representation of real DOM elements used to compute fast diffs and batch updates efficiently.' },
+      { front: 'What is RAG (Retrieval-Augmented Generation)?', back: 'A technique combining vector retrieval with LLMs to generate contextually accurate, grounded answers.' },
+      { front: 'What is Database Sharding?', back: 'A horizontal partitioning technique that splits a large database across multiple smaller server instances.' },
+      { front: 'What is JWT (JSON Web Token)?', back: 'A compact, URL-safe means of representing claims to be transferred between two parties securely using cryptographic signatures.' }
     ]
   });
 }

@@ -48,7 +48,12 @@ const defaultFallbackKit: PrepKit = {
   flashcards: [
     { id: 'f1', front: 'What is RAG (Retrieval-Augmented Generation)?', back: 'A technique that combines external information retrieval from vector DBs with LLMs to generate accurate, context-aware answers.', requirement_ids: ['r2'] },
     { id: 'f2', front: 'What is Vector Embedding?', back: 'A numerical array representation of text or data capturing semantic meaning in high-dimensional vector space.', requirement_ids: ['r2'] },
-    { id: 'f3', front: 'What is API Idempotency?', back: 'HTTP operations (GET, PUT, DELETE) that yield the exact same result regardless of execution frequency.', requirement_ids: ['r3'] }
+    { id: 'f3', front: 'What is API Idempotency?', back: 'HTTP operations (GET, PUT, DELETE) that yield the exact same result regardless of execution frequency.', requirement_ids: ['r3'] },
+    { id: 'f4', front: 'Difference between SQL and NoSQL databases?', back: 'SQL databases are relational and structured with schemas, whereas NoSQL are document/key-value based and horizontally scalable.', requirement_ids: ['r1'] },
+    { id: 'f5', front: 'What is CORS (Cross-Origin Resource Sharing)?', back: 'A browser security mechanism that uses HTTP headers to determine whether to allow cross-origin request access.', requirement_ids: ['r3'] },
+    { id: 'f6', front: 'What is Node.js Event Loop?', back: 'A single-threaded loop that offloads non-blocking asynchronous operations to the kernel and executes callbacks.', requirement_ids: ['r1'] },
+    { id: 'f7', front: 'What is React Virtual DOM?', back: 'A lightweight in-memory representation of real DOM elements used to compute fast diffs and batch updates efficiently.', requirement_ids: ['r1'] },
+    { id: 'f8', front: 'What is Database Sharding?', back: 'A horizontal partitioning technique that splits a large database across multiple smaller server instances.', requirement_ids: ['r3'] }
   ],
   schedule: {
     days_available: 7,
