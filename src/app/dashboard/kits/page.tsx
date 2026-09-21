@@ -1,0 +1,175 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { Folder, ArrowRight, Trash2, MoreHorizontal, Calendar, Loader2, PlusCircle, Sparkles } from 'lucide-react';
+
+export default function MyKitsPage() {
+  const router = useRouter();
+  const [savedKits, setSavedKits] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchKits();
+  }, []);
+
+  const fetchKits = async () => {
+    try {
+      const res = await fetch('/api/kits');
+      if (res.status === 401) { router.push('/login'); return; }
+      const data = await res.json();
+      if (data.kits) setSavedKits(data.kits);
+    } catch (err) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpenMenuId(null);
+    if (!confirm('Delete this prep kit?')) return;
+    try {
+      const res = await fetch(`/api/kits/${id}`, { method: 'DELETE' });
+      if (res.ok) setSavedKits(prev => prev.filter(k => k._id !== id));
+    } catch (err) {}
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F8F9FF]">
+      <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-8 pb-24">
+
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-[24px] font-extrabold text-slate-900 tracking-tight mb-1">My Prep Kits</h1>
+            <p className="text-[14px] text-slate-500 font-medium">All your interview preparation kits in one place.</p>
+          </div>
+          <button
+            onClick={() => router.push('/dashboard/create')}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-bold px-4 py-2.5 rounded-xl transition-all shadow-sm"
+          >
+            <PlusCircle className="w-4 h-4" />
+            New Kit
+          </button>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+          </div>
+        ) : savedKits.length === 0 ? (
+          /* Empty State */
+          <div className="bg-white border border-dashed border-slate-300 rounded-2xl p-16 flex flex-col items-center text-center">
+            <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-5">
+              <Folder className="w-8 h-8 text-indigo-400" />
+            </div>
+            <h2 className="text-[18px] font-bold text-slate-900 mb-2">No prep kits yet</h2>
+            <p className="text-[14px] text-slate-400 font-medium max-w-sm mb-7 leading-relaxed">
+              Create your first prep kit by pasting a job description. AI will build your personalized preparation plan.
+            </p>
+            <button
+              onClick={() => router.push('/dashboard/create')}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-[14px] font-bold rounded-xl transition-all shadow-sm"
+            >
+              <Sparkles className="w-4 h-4" />
+              Create Your First Kit
+            </button>
+          </div>
+        ) : (
+          /* Kits Grid */
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+            {savedKits.map((item, i) => {
+              const initial = (item.company || 'C').charAt(0).toUpperCase();
+              const questions = item.kit?.questions?.length || 0;
+              const days = item.kit?.schedule?.days_available || 5;
+              const sections = item.kit?.schedule?.days?.length || 5;
+              const role = item.kit?.role?.title || item.title || 'Role';
+              const company = item.company || 'Company';
+
+              return (
+                <motion.div
+                  key={item._id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.06 }}
+                  onClick={() => router.push(`/kit/${item._id}`)}
+                  className="group bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-indigo-200 hover:shadow-[0_4px_24px_-4px_rgba(99,102,241,0.14)] transition-all flex flex-col"
+                >
+                  {/* Top */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 text-[16px] font-extrabold flex-shrink-0">
+                        {initial}
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-[14px] font-bold text-slate-900 line-clamp-1">{role}</h3>
+                        <p className="text-[12px] font-semibold text-slate-400 truncate">{company}</p>
+                      </div>
+                    </div>
+
+                    {/* Three-dot menu */}
+                    <div className="relative" onClick={e => e.stopPropagation()}>
+                      <button
+                        onClick={() => setOpenMenuId(openMenuId === item._id ? null : item._id)}
+                        className="p-1.5 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                      >
+                        <MoreHorizontal className="w-4 h-4" />
+                      </button>
+                      {openMenuId === item._id && (
+                        <div className="absolute right-0 top-8 z-20 w-36 bg-white border border-slate-200 rounded-xl shadow-lg py-1">
+                          <button
+                            onClick={(e) => handleDelete(item._id, e)}
+                            className="w-full text-left px-3 py-2.5 text-[13px] text-red-600 hover:bg-red-50 flex items-center gap-2 font-semibold"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            Delete Kit
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Metadata */}
+                  <div className="flex flex-wrap gap-1.5 mb-5">
+                    {[
+                      `${days} days`,
+                      `${sections} sections`,
+                      `${questions} questions`,
+                    ].map(tag => (
+                      <span key={tag} className="text-[11px] font-semibold bg-slate-50 border border-slate-200 text-slate-500 px-2.5 py-1 rounded-lg">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Progress */}
+                  <div className="space-y-1.5 mb-5">
+                    <div className="flex justify-between text-[11px] font-bold">
+                      <span className="text-slate-400">Preparation progress</span>
+                      <span className="text-indigo-600">0%</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-full w-0 bg-indigo-500 rounded-full" />
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">Ready</span>
+                    <span className="text-[13px] font-bold text-slate-400 group-hover:text-indigo-600 flex items-center gap-1 transition-colors">
+                      Open Kit <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

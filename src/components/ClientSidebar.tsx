@@ -10,11 +10,11 @@ import {
 
 const navItems = [
   { name: 'Overview', icon: LayoutDashboard, href: '/dashboard' },
-  { name: 'My Prep Kits', icon: Folder, href: '/dashboard#kits' },
+  { name: 'My Prep Kits', icon: Folder, href: '/dashboard/kits' },
   { name: 'Create Kit', icon: PlusSquare, href: '/dashboard/create' },
-  { name: 'Flashcards', icon: Layers, href: '#' },
-  { name: 'Practice', icon: PlayCircle, href: '#' },
-  { name: 'Schedule', icon: Calendar, href: '#' },
+  { name: 'Flashcards', icon: Layers, href: '#', soon: true },
+  { name: 'Practice', icon: PlayCircle, href: '#', soon: true },
+  { name: 'Schedule', icon: Calendar, href: '#', soon: true },
 ];
 
 export function ClientSidebar() {
@@ -32,7 +32,7 @@ export function ClientSidebar() {
 
   const isActive = (href: string) => {
     if (href === '/dashboard') return pathname === '/dashboard';
-    if (href === '/dashboard/create') return pathname === '/dashboard/create';
+    if (href.startsWith('/dashboard/')) return pathname === href;
     return false;
   };
 
@@ -50,30 +50,30 @@ export function ClientSidebar() {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {navItems.map((item) => {
-          const active = isActive(item.href);
-          const disabled = item.href === '#';
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all
-                ${active
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : disabled
-                  ? 'text-slate-300 cursor-not-allowed pointer-events-none'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-            >
-              <item.icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-indigo-600' : disabled ? 'text-slate-300' : 'text-slate-400'}`} />
-              <span>{item.name}</span>
-              {disabled && (
-                <span className="ml-auto text-[10px] font-bold text-slate-300 bg-slate-100 px-1.5 py-0.5 rounded">Soon</span>
-              )}
-            </Link>
-          );
-        })}
+          {navItems.map((item: any) => {
+            const active = isActive(item.href);
+            const disabled = item.soon;
+            return (
+              <Link
+                key={item.name}
+                href={disabled ? '#' : item.href}
+                onClick={() => { if (!disabled) setMobileOpen(false); }}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all
+                  ${active
+                    ? 'bg-indigo-50 text-indigo-700'
+                    : disabled
+                    ? 'text-slate-300 cursor-not-allowed pointer-events-none'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+              >
+                <item.icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-indigo-600' : disabled ? 'text-slate-300' : 'text-slate-400'}`} />
+                <span>{item.name}</span>
+                {disabled && (
+                  <span className="ml-auto text-[10px] font-bold text-slate-300 bg-slate-100 px-1.5 py-0.5 rounded">Soon</span>
+                )}
+              </Link>
+            );
+          })}
       </nav>
 
       {/* Bottom */}
