@@ -159,7 +159,7 @@ export default function DashboardPage() {
           {hasKits && recentKit && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
-                onClick={() => router.push(`/practice/${recentKit._id}`)}
+                onClick={() => router.push(`/dashboard/kits/${recentKit._id}`)}
                 className="flex items-center gap-3 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-200 rounded-2xl px-5 py-4 transition-all shadow-sm group"
               >
                 <div className="w-9 h-9 bg-emerald-50 group-hover:bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors">

@@ -4,16 +4,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
 import {
-  LayoutDashboard, Folder, PlusSquare,
-  PlayCircle, Calendar, Settings, LogOut, Menu, X
+  LayoutDashboard, Folder, PlusSquare, Settings, LogOut, Menu, X
 } from 'lucide-react';
 
 const navItems = [
   { name: 'Overview', icon: LayoutDashboard, href: '/dashboard' },
-  { name: 'Create Kit', icon: PlusSquare, href: '/dashboard/create' },
   { name: 'My Prep Kits', icon: Folder, href: '/dashboard/kits' },
-  { name: 'Schedule', icon: Calendar, href: '/dashboard/schedule' },
-  { name: 'Practice', icon: PlayCircle, href: '/dashboard/practice' },
+  { name: 'Create Kit', icon: PlusSquare, href: '/dashboard/create' },
 ];
 
 export function ClientSidebar() {
@@ -31,7 +28,8 @@ export function ClientSidebar() {
 
   const isActive = (href: string) => {
     if (href === '/dashboard') return pathname === '/dashboard';
-    if (href.startsWith('/dashboard/')) return pathname === href;
+    if (href === '/dashboard/kits') return pathname.startsWith('/dashboard/kits') || pathname.startsWith('/kit/');
+    if (href === '/dashboard/create') return pathname === '/dashboard/create';
     return false;
   };
 
@@ -73,7 +71,7 @@ export function ClientSidebar() {
         })}
       </nav>
 
-      {/* Bottom: Settings + Logout (No email box) */}
+      {/* Bottom: Settings + Logout */}
       <div className="border-t border-slate-100 flex-shrink-0 p-3 space-y-0.5">
         <Link
           href="/dashboard/settings"
