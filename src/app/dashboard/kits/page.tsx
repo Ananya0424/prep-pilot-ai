@@ -152,13 +152,13 @@ export default function MyKitsPage() {
                   {/* Top Header */}
                   <div>
                     <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 min-w-0 flex-1 pr-2">
                         <div className="w-11 h-11 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 text-[16px] font-extrabold flex-shrink-0">
                           {initial}
                         </div>
-                        <div className="min-w-0">
-                          <h3 className="text-[15px] font-bold text-slate-900 line-clamp-1 group-hover:text-indigo-600 transition-colors">{company}</h3>
-                          <p className="text-[12px] font-semibold text-slate-500 truncate">{role}</p>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-[15px] font-bold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">{company}</h3>
+                          <p className="text-[12px] font-semibold text-slate-500 truncate max-w-full" title={role}>{role}</p>
                         </div>
                       </div>
 

@@ -46,11 +46,32 @@ export default function DashboardPage() {
 
   const fetchKits = async () => {
     try {
+      let serverKits: any[] = [];
       const res = await fetch('/api/kits');
       if (res.status === 401) { router.push('/login'); return; }
-      const data = await res.json();
-      if (data.kits) setSavedKits(data.kits);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.kits) serverKits = data.kits;
+      }
+
+      let localKits: any[] = [];
+      try {
+        const rawLocal = localStorage.getItem('preppilot_saved_kits_list');
+        if (rawLocal) localKits = JSON.parse(rawLocal);
+      } catch (e) {}
+
+      const kitMap = new Map();
+      [...serverKits, ...localKits].forEach(k => {
+        if (k && (k._id || k.id)) kitMap.set(k._id || k.id, k);
+      });
+
+      const merged = Array.from(kitMap.values());
+      setSavedKits(merged);
     } catch (err) {
+      try {
+        const rawLocal = localStorage.getItem('preppilot_saved_kits_list');
+        if (rawLocal) setSavedKits(JSON.parse(rawLocal));
+      } catch (e) {}
     } finally {
       setLoadingKits(false);
     }
