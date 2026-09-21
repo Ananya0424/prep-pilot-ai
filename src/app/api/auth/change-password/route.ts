@@ -15,8 +15,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Current and new passwords are required' }, { status: 400 });
     }
 
-    if (newPassword.length < 6) {
-      return NextResponse.json({ error: 'New password must be at least 6 characters long' }, { status: 400 });
+    if (newPassword.length < 4) {
+      return NextResponse.json({ error: 'New password must be at least 4 characters long' }, { status: 400 });
     }
 
     const conn = await connectToDatabase();

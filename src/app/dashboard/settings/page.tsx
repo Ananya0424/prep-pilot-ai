@@ -31,8 +31,8 @@ export default function SettingsPage() {
       return;
     }
 
-    if (newPassword.length < 6) {
-      setError('New password must be at least 6 characters long');
+    if (newPassword.length < 4) {
+      setError('New password must be at least 4 characters long');
       return;
     }
 
