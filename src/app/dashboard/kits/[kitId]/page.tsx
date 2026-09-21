@@ -28,7 +28,7 @@ export default function KitDetailPage() {
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [regeneratingSection, setRegeneratingSection] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'requirements' | 'questions' | 'flashcards' | 'schedule' | 'practice'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'requirements' | 'questions' | 'flashcards' | 'schedule'>('overview');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Confidence & Schedule State
@@ -264,7 +264,6 @@ export default function KitDetailPage() {
     { id: 'questions', label: 'Questions', icon: HelpCircle, count: kit.questions?.length || 0 },
     { id: 'flashcards', label: 'Flashcards', icon: Layers, count: kit.flashcards?.length || 0 },
     { id: 'schedule', label: 'Schedule', icon: Calendar, count: kit.schedule?.days?.length || 0 },
-    { id: 'practice', label: 'Practice', icon: PlayCircle },
   ];
 
   return (
@@ -613,7 +612,7 @@ export default function KitDetailPage() {
                               Day {day.day}: {cleanFocus}
                             </h3>
                             <p className="text-[12px] font-medium text-slate-400">
-                              Duration: {day.minutes} mins • {linkedQs.length} questions linked
+                              Duration: {day.minutes} mins
                             </p>
                           </div>
                         </div>
@@ -654,14 +653,7 @@ export default function KitDetailPage() {
             </div>
           )}
 
-          {/* ── 6. PRACTICE TAB ── */}
-          {activeTab === 'practice' && (
-            <ScopedPracticeTab
-              flashcards={kit.flashcards || []}
-              confidenceMap={confidenceMap}
-              onUpdateConfidence={updateConfidence}
-            />
-          )}
+
 
         </div>
 

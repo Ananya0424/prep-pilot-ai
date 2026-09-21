@@ -1,0 +1,574 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-09-20T19:39:31.068Z",
+  "kits": [
+    {
+      "id": "case-01",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "Example Domain",
+          "company_url": "https://example.com",
+          "role": "Senior Full-Stack Engineer (React + Node.js)",
+          "location": "Remote / Unspecified",
+          "jd_chars": 320,
+          "researched_at": "2026-09-20T19:38:26.423Z",
+          "pages_used": [
+            "https://example.com"
+          ]
+        },
+        "company_brief": {
+          "summary": "Limited information is available because the provided URL belongs to a standard placeholder domain reserved for documentation examples and web testing. No corporate background, culture, or hiring insights exist for this page.",
+          "what_they_do": "Serves as an illustrative domain for use in technical documentation, web examples, and operational testing without requiring permission.",
+          "sources": [
+            "https://example.com"
+          ]
+        },
+        "role": {
+          "title": "Senior Full-Stack Engineer (React + Node.js)",
+          "seniority": "Senior",
+          "responsibilities": [
+            "Building scalable web applications",
+            "Mentoring junior developers"
+          ],
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "5+ years of experience building scalable web applications",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r2",
+              "text": "Proficiency in React",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r3",
+              "text": "Proficiency in Node.js",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r4",
+              "text": "Proficiency in MongoDB",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r5",
+              "text": "Experience with system design",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r6",
+              "text": "Experience mentoring junior developers",
+              "kind": "behavioural",
+              "priority": "must"
+            },
+            {
+              "id": "r7",
+              "text": "Experience with GraphQL",
+              "kind": "technical",
+              "priority": "nice"
+            },
+            {
+              "id": "r8",
+              "text": "Experience with Docker",
+              "kind": "technical",
+              "priority": "nice"
+            }
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "Explain the difference between React Server Components (RSC) and Client Components in React 18+. How do re-rendering mechanics and bundle sizes differ between them?",
+            "answer_outline": "Key points to cover:\n- Server Components execute strictly on the server and render to a special intermediate JSON format (RSC payload), sending zero JavaScript payload to the browser.\n- Client Components are traditional React components rendered on both server (SSR) and client, maintaining state, effects, and event listeners.\n- Server components cannot use hooks (`useState`, `useEffect`) or browser APIs.\n- Re-rendering: Server components refetch without losing client-side DOM state.",
+            "difficulty": 3
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "How do React's `useTransition` and `useDeferredValue` hooks improve user experience during heavy UI updates?",
+            "answer_outline": "Key points to cover:\n- React 18 Concurrent Rendering model.\n- `useTransition` allows developers to mark state updates as non-urgent, keeping the UI responsive to user inputs (e.g., typing in a text field) while rendering long lists in the background.\n- `useDeferredValue` defers updating a secondary value (similar to debouncing/throttling) without blocking user interactions.\n- Difference between concurrent interrupting vs traditional debouncing.",
+            "difficulty": 2
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "technical",
+            "prompt": "Deep dive into the Node.js Event Loop architecture. Describe the different phases (Timers, Poll, Check) and how `process.nextTick()` and `Promise` microtasks fit into the execution order.",
+            "answer_outline": "Key points to cover:\n- Event loop phases: Timers (setTimeout/setInterval), Pending Callbacks, Idle/Prepare, Poll (I/O execution and polling), Check (setImmediate), Close callbacks.\n- Microtask queues: `process.nextTick` queue has highest priority, executed immediately after current operation completes before moving to next microtask/phase.\n- Promise microtasks queue executes right after `process.nextTick` items.\n- libuv thread pool offloading for sync file system I/O, DNS, and crypto.",
+            "difficulty": 3
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "technical",
+            "prompt": "How do Node.js Streams work, and how do you handle backpressure when processing large files or piping network sockets?",
+            "answer_outline": "Key points to cover:\n- Four types of streams: Readable, Writable, Duplex, Transform.\n- Internal buffer sizing (`highWaterMark`).\n- Backpressure occurs when a Readable stream produces data faster than Writable can consume, filling the internal buffer.\n- Solution: `writable.write()` returns `false`, pause readable stream, wait for `drain` event on writable stream before resuming, or use `stream.pipeline()`.",
+            "difficulty": 2
+          },
+          {
+            "id": "q5",
+            "requirement_ids": [
+              "r4"
+            ],
+            "category": "technical",
+            "prompt": "How do you design and optimize MongoDB compound indexes? Explain the ESR (Equality, Sort, Range) rule with a practical example.",
+            "answer_outline": "Key points to cover:\n- Compound index ordering: Equality fields first, Sort fields second, Range fields last.\n- Why: Equality reduces search space, Sort orders records efficiently without in-memory sorting, Range filters the remaining set.\n- How to verify index usage using `db.collection.explain('executionStats')` looking for `IXSCAN` vs `COLLSCAN` and `totalDocsExamined`.",
+            "difficulty": 2
+          },
+          {
+            "id": "q6",
+            "requirement_ids": [
+              "r4"
+            ],
+            "category": "technical",
+            "prompt": "Explain MongoDB replica set architecture, election algorithms, and how `readPreference` and `writeConcern` choices affect consistency and latency.",
+            "answer_outline": "Key points to cover:\n- Primary and Secondary node setup with heartbeats and elections (Raft variant).\n- `writeConcern` (e.g., `w: 1`, `w: majority`, `j: true`) trades latency for durability against data loss during failovers.\n- `readPreference` (primary, primaryPreferred, secondary, nearest) trade consistency guarantees (eventual consistency) for lower read latency.",
+            "difficulty": 3
+          },
+          {
+            "id": "q7",
+            "requirement_ids": [
+              "r5",
+              "r1"
+            ],
+            "category": "system-design",
+            "prompt": "Design a real-time collaborative document editing system or notification engine that scales to 100,000 active concurrent WebSocket connections.",
+            "answer_outline": "Key points to cover:\n- Stateless API Gateway / Load Balancers supporting WebSocket upgrade headers (L7 load balancing).\n- Distributed pub/sub backplane using Redis Pub/Sub or Apache Kafka to broadcast events across multiple server nodes.\n- Connection handling: Horizontal scaling of Node.js instances with socket adapter (e.g., socket.io-redis-adapter).\n- Edge persistence/caching, heartbeats/ping-pong frame management to prevent connection droppage.",
+            "difficulty": 3
+          },
+          {
+            "id": "q8",
+            "requirement_ids": [
+              "r5",
+              "r1"
+            ],
+            "category": "system-design",
+            "prompt": "How would you implement API Rate Limiting for a microservices cluster? Compare Token Bucket and Sliding Window Log algorithms.",
+            "answer_outline": "Key points to cover:\n- Centralized memory store like Redis using atomic operations (`INCR`, `EXPIRE`) or Lua scripts.\n- Token Bucket: Refills tokens at constant rate; burst capacity allowed.\n- Sliding Window Log: Logs timestamps per request; precise but memory-intensive.\n- Sliding Window Counter: Hybrid approach balance of precision and low memory footprint.\n- Distributed system considerations: Latency overhead, race conditions, edge vs API gateway enforcement.",
+            "difficulty": 2
+          },
+          {
+            "id": "q9",
+            "requirement_ids": [
+              "r6"
+            ],
+            "category": "behavioural",
+            "prompt": "Describe a scenario where a junior developer on your team was consistently delivering low-quality code or missing deadlines. How did you handle the situation and mentor them?",
+            "answer_outline": "Key points to cover:\n- Empathy and initial 1-on-1 discovery: Identify root cause (lack of domain knowledge, fear of asking questions, poor tooling/setup).\n- Constructive actionable feedback framework (e.g., SBI - Situation, Behavior, Impact).\n- Mentorship strategy: Pair programming, breaking down task sizes, smaller feedback loops, defining clear technical acceptance criteria.\n- Positive outcome / tracking improvement over time.",
+            "difficulty": 2
+          },
+          {
+            "id": "q10",
+            "requirement_ids": [
+              "r6"
+            ],
+            "category": "behavioural",
+            "prompt": "How do you balance your time between driving your own complex technical deliverables and mentoring/doing thorough code reviews for junior team members?",
+            "answer_outline": "Key points to cover:\n- Time blocking and prioritization techniques (e.g., async code reviews, dedicated office hours/mentorship slots).\n- Empowering juniors through clear documentation, architectural guidelines, and automated tooling (linters, pre-commit hooks, CI/CD checks) to reduce code review overhead.\n- Viewing code review as a primary mentorship tool rather than an administrative chore.",
+            "difficulty": 1
+          },
+          {
+            "id": "q11",
+            "requirement_ids": [
+              "r7"
+            ],
+            "category": "technical",
+            "prompt": "What is the N+1 query problem in GraphQL, and how does DataLoader resolve it using batching and caching?",
+            "answer_outline": "Key points to cover:\n- N+1 problem: Resolving a query for N parent items requires fetching child items for each parent, generating 1 + N queries to backend databases.\n- DataLoader solution: Collects all individual keys requested within a single event loop execution tick (batching) and fires a single batch query (e.g., `SELECT * WHERE id IN (...)`).\n- In-memory caching per request lifecycle to prevent duplicate data fetches within the same request context.",
+            "difficulty": 2
+          },
+          {
+            "id": "q12",
+            "requirement_ids": [
+              "r7"
+            ],
+            "category": "technical",
+            "prompt": "How do you handle schema stitching vs GraphQL Federation when scaling a GraphQL monolith to a microservices architecture?",
+            "answer_outline": "Key points to cover:\n- Schema Stitching: Imperative/configuration approach to merging multiple GraphQL schemas into one unified gateway.\n- GraphQL Federation (e.g., Apollo Federation): Declarative approach where subgraphs expose entities and directives (`@key`, `@external`, `@requires`), and a router composes them automatically.\n- Trade-offs: Maintenance burden, query execution plan generation, latency overhead, ownership across independent teams.",
+            "difficulty": 3
+          },
+          {
+            "id": "q13",
+            "requirement_ids": [
+              "r8"
+            ],
+            "category": "technical",
+            "prompt": "How do multi-stage Docker builds help optimize image size, build speed, and security for Node.js production applications?",
+            "answer_outline": "Key points to cover:\n- Multi-stage builds separate compilation/build stages (with heavy build tools like `python`, `g++`, `devDependencies`) from the runtime stage.\n- Build stage installs dev dependencies and compiles assets; Runtime stage copies only production dependencies (`--omit=dev`) and built artifacts.\n- Security: Reduces attack surface by using lightweight distroless/alpine base images and running as non-root user (`USER node`).\n- Caching: Layering `package.json` install prior to source code copy.",
+            "difficulty": 2
+          },
+          {
+            "id": "q14",
+            "requirement_ids": [
+              "r8"
+            ],
+            "category": "technical",
+            "prompt": "How do you handle Docker networking and persistent volumes when setting up a local development environment with Node.js and MongoDB?",
+            "answer_outline": "Key points to cover:\n- Docker Compose setup using bridge network to enable service discovery by container name (e.g., `mongodb://mongo:27017/db`).\n- Named volumes vs bind mounts: Bind mounts for hot-reloading application source code (`node_modules` anonymous volume trick), Named volumes for MongoDB data persistence across container restarts.",
+            "difficulty": 1
+          },
+          {
+            "id": "q15",
+            "requirement_ids": [
+              "r1",
+              "r3",
+              "r4"
+            ],
+            "category": "technical",
+            "prompt": "How do you diagnose and fix a memory leak in a production Node.js application connected to MongoDB?",
+            "answer_outline": "Key points to cover:\n- Diagnostics: Monitoring heap metrics, triggering heap dumps via `heapdump` module or `--inspect` flag / Chrome DevTools / Clinic.js.\n- Common Node.js memory leaks: Global variables, unclosed event listeners/subscriptions, unreleased closures, growing in-memory arrays.\n- MongoDB specific issues: Unindexed queries buffering huge result sets in Node memory instead of streaming cursor, connection pool leaks.",
+            "difficulty": 3
+          },
+          {
+            "id": "q16",
+            "requirement_ids": [
+              "r1",
+              "r5"
+            ],
+            "category": "system-design",
+            "prompt": "How do you handle session management and authentication in a horizontally auto-scaled web application across multiple availability zones?",
+            "answer_outline": "Key points to cover:\n- Stateless JWTs vs Centralized Session Store (Redis/Memcached).\n- Stateless approach: Signed JWTs with short expiry + refresh tokens stored in HTTP-only, secure, SameSite cookies; revocation strategy using token blacklists or short lifespans.\n- Centralized session store approach: Opaque session IDs stored in distributed Redis cluster with automatic failover.",
+            "difficulty": 2
+          },
+          {
+            "id": "q17",
+            "requirement_ids": [
+              "r6"
+            ],
+            "category": "behavioural",
+            "prompt": "Give an example of how you introduced a technical best practice (e.g., automated testing, design docs) to an engineering team with mixed experience levels.",
+            "answer_outline": "Key points to cover:\n- Identifying the problem: Lack of consistency, regressions, or slow onboarding.\n- Incremental introduction: Start small (e.g., adding unit test requirements to critical path modules first).\n- Hands-on workshop / pair programming to demonstrate the standard without being dogmatic.\n- Automated enforcement: Setting up CI/CD pipelines and PR templates to turn guidelines into easy habits.",
+            "difficulty": 2
+          },
+          {
+            "id": "q18",
+            "requirement_ids": [
+              "r1",
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "How do you optimize client-side initial load time (Core Web Vitals - LCP/FID/CLS) for a massive single-page or SSR React application?",
+            "answer_outline": "Key points to cover:\n- Code splitting and lazy loading (`React.lazy`, dynamic `import()`).\n- SSR / SSG / ISR to serve pre-rendered HTML for fast LCP.\n- Asset optimization: Image sizing, modern formats (WebP/AVIF), font display swap.\n- Resource hints: `preload`, `prefetch`, `dns-prefetch`.\n- Tree shaking and bundle analysis (Webpack Bundle Analyzer / Vite visualizer).",
+            "difficulty": 2
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "f1",
+            "front": "What is React Fiber?",
+            "back": "React's reimplemented reconciliation engine that allows breaking rendering work into incremental chunks, prioritizing urgent updates, and enabling concurrent features.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "What is the key difference between `useMemo` and `useCallback`?",
+            "back": "`useMemo` memoizes and returns the *result* of a calculation, whereas `useCallback` memoizes the *function instance* itself between renders.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f3",
+            "front": "What is the purpose of `useImperativeHandle` in React?",
+            "back": "It customizes the instance value exposed to parent components when using `ref`, allowing encapsulation of DOM node manipulation.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f4",
+            "front": "How does `process.nextTick()` differ from `setImmediate()` in Node.js?",
+            "back": "`process.nextTick()` fires immediately after the current operation finishes (before the event loop continues). `setImmediate()` runs during the 'Check' phase of the event loop.",
+            "requirement_ids": [
+              "r3"
+            ]
+          },
+          {
+            "id": "f5",
+            "front": "What is Stream Backpressure in Node.js?",
+            "back": "A signaling mechanism that pauses the Readable stream when the Writable stream's buffer exceeds its `highWaterMark`, preventing memory exhaustion.",
+            "requirement_ids": [
+              "r3"
+            ]
+          },
+          {
+            "id": "f6",
+            "front": "Why should you avoid using synchronous FS methods (`fs.readFileSync`) in a Node.js web server?",
+            "back": "They block the single thread execution in the event loop, preventing all other incoming requests from being processed until I/O completes.",
+            "requirement_ids": [
+              "r3"
+            ]
+          },
+          {
+            "id": "f7",
+            "front": "What is the ESR Rule in MongoDB compound indexing?",
+            "back": "Equality, Sort, Range. Place fields filtered by exact match first, fields used for sorting second, and range queries last to maximize index utilization.",
+            "requirement_ids": [
+              "r4"
+            ]
+          },
+          {
+            "id": "f8",
+            "front": "What is `writeConcern: { w: \"majority\" }` in MongoDB?",
+            "back": "It ensures that a write operation is written and acknowledged by a majority of data-bearing replica set members before returning success.",
+            "requirement_ids": [
+              "r4"
+            ]
+          },
+          {
+            "id": "f9",
+            "front": "What is a Covered Query in MongoDB?",
+            "back": "A query where all matching fields and projected output fields are contained within an index, allowing MongoDB to return results without reading underlying documents.",
+            "requirement_ids": [
+              "r4"
+            ]
+          },
+          {
+            "id": "f10",
+            "front": "What is the CAP Theorem in distributed systems?",
+            "back": "States that a distributed data store can simultaneously provide at most two out of three guarantees: Consistency, Availability, and Partition Tolerance.",
+            "requirement_ids": [
+              "r5",
+              "r1"
+            ]
+          },
+          {
+            "id": "f11",
+            "front": "What is the Token Bucket rate limiting algorithm?",
+            "back": "Tokens are added to a bucket at a fixed rate. Each request consumes a token; if the bucket is empty, requests are dropped or delayed, allowing controlled burst capacity.",
+            "requirement_ids": [
+              "r5"
+            ]
+          },
+          {
+            "id": "f12",
+            "front": "What is the SBI framework for delivering mentorship feedback?",
+            "back": "Situation (context), Behavior (observed specific actions), and Impact (the result of that behavior on team/project). Keeps feedback objective and actionable.",
+            "requirement_ids": [
+              "r6"
+            ]
+          },
+          {
+            "id": "f13",
+            "front": "What is the N+1 problem in GraphQL?",
+            "back": "An issue where resolving a list of N items results in 1 query for the list plus N separate queries for each item's nested relationships.",
+            "requirement_ids": [
+              "r7"
+            ]
+          },
+          {
+            "id": "f14",
+            "front": "How does GraphQL DataLoader eliminate N+1 queries?",
+            "back": "It batches individual fetch requests made during a single event loop tick into a single batched database query, caching results per request.",
+            "requirement_ids": [
+              "r7"
+            ]
+          },
+          {
+            "id": "f15",
+            "front": "What is a Multi-Stage Docker build?",
+            "back": "A technique using multiple `FROM` statements in a Dockerfile to separate build-time dependencies from runtime, yielding smaller and safer final images.",
+            "requirement_ids": [
+              "r8"
+            ]
+          },
+          {
+            "id": "f16",
+            "front": "In Docker, what is the difference between `CMD` and `ENTRYPOINT`?",
+            "back": "`ENTRYPOINT` sets the immutable command to execute when the container starts, while `CMD` sets default arguments that can be easily overridden from the CLI.",
+            "requirement_ids": [
+              "r8"
+            ]
+          },
+          {
+            "id": "f17",
+            "front": "What is Database Sharding?",
+            "back": "Horizontal database partitioning where rows of a database are stored across multiple separate database instances using a shard key.",
+            "requirement_ids": [
+              "r1",
+              "r5"
+            ]
+          },
+          {
+            "id": "f18",
+            "front": "What is the difference between horizontal and vertical scaling?",
+            "back": "Vertical scaling increases hardware capacity (CPU/RAM) of a single server; Horizontal scaling adds more server instances to distribute load.",
+            "requirement_ids": [
+              "r1"
+            ]
+          }
+        ],
+        "schedule": {
+          "days_available": 5,
+          "days": [
+            {
+              "day": 1,
+              "focus": "Day 1: Technical & System-design",
+              "question_ids": [
+                "q1",
+                "q3",
+                "q6",
+                "q7"
+              ],
+              "minutes": 180
+            },
+            {
+              "day": 2,
+              "focus": "Day 2: Technical",
+              "question_ids": [
+                "q15",
+                "q2",
+                "q4",
+                "q5"
+              ],
+              "minutes": 135
+            },
+            {
+              "day": 3,
+              "focus": "Day 3: System-design & Behavioural",
+              "question_ids": [
+                "q8",
+                "q9",
+                "q16",
+                "q17"
+              ],
+              "minutes": 120
+            },
+            {
+              "day": 4,
+              "focus": "Day 4: Behavioural & Technical",
+              "question_ids": [
+                "q18",
+                "q10",
+                "q12",
+                "q11"
+              ],
+              "minutes": 125
+            },
+            {
+              "day": 5,
+              "focus": "Day 5: Technical",
+              "question_ids": [
+                "q13",
+                "q14"
+              ],
+              "minutes": 50
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "case-02",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "Httpbin",
+          "company_url": "https://httpbin.org/status/404",
+          "role": "Backend Developer",
+          "location": "Remote / Unspecified",
+          "jd_chars": 40,
+          "researched_at": "2026-09-20T19:39:31.067Z",
+          "pages_used": []
+        },
+        "company_brief": {
+          "summary": "Company website could not be reached or provided no public information.",
+          "what_they_do": "Information unavailable from public crawling.",
+          "sources": [
+            "https://httpbin.org/status/404"
+          ]
+        },
+        "role": {
+          "title": "Backend Developer",
+          "seniority": "Unspecified",
+          "responsibilities": [],
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Experience with Node.js development",
+              "kind": "technical",
+              "priority": "must"
+            }
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "Can you describe your experience with Experience with Node.js development?",
+            "answer_outline": "Demonstrate hands-on experience, key challenges faced, and measurable impact related to Experience with Node.js development.",
+            "difficulty": 2
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "f1",
+            "front": "Core concept: Experience with Node.js development",
+            "back": "Essential principles and best practices for Experience with Node.js development.",
+            "requirement_ids": [
+              "r1"
+            ]
+          }
+        ],
+        "schedule": {
+          "days_available": 3,
+          "days": [
+            {
+              "day": 1,
+              "focus": "Day 1: Technical",
+              "question_ids": [
+                "q1"
+              ],
+              "minutes": 30
+            },
+            {
+              "day": 2,
+              "focus": "Day 2: General Review & Prep",
+              "question_ids": [],
+              "minutes": 30
+            },
+            {
+              "day": 3,
+              "focus": "Day 3: General Review & Prep",
+              "question_ids": [],
+              "minutes": 30
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    }
+  ]
+}
