@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FileText, Globe, Calendar, Upload, Loader2, ArrowRight, Trash2, Clock, Briefcase, PlusCircle, Search, Bell, ChevronDown, CheckCircle2, Circle, MoreHorizontal, Activity, Star, BookOpen, Target, Sparkles, TrendingUp, Layers, Folder } from 'lucide-react';
+import { FileText, Globe, Calendar, Upload, Loader2, ArrowRight, Trash2, Clock, Briefcase, PlusCircle, Search, Bell, ChevronDown, CheckCircle2, Circle, MoreHorizontal, Activity, Star, BookOpen, Target, Sparkles, TrendingUp, Layers, Folder, AlertTriangle } from 'lucide-react';
 
 export default function DashboardPage() {
   const router = useRouter();
