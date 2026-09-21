@@ -18,8 +18,8 @@ if (!cached) {
 }
 
 export async function connectToDatabase(): Promise<typeof mongoose | null> {
-  // If MONGODB_URI is empty or placeholder cluster0, return null for fallback mode
-  if (!MONGODB_URI || MONGODB_URI.includes('cluster0.mongodb.net')) {
+  // If MONGODB_URI is empty or placeholder, return null for fallback mode
+  if (!MONGODB_URI || MONGODB_URI.includes('<password>') || MONGODB_URI.includes('YOUR_MONGODB_URI')) {
     return null;
   }
 
