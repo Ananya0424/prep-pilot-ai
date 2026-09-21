@@ -9,8 +9,8 @@ import {
 
 const navItems = [
   { name: 'Overview', icon: LayoutDashboard, href: '/dashboard' },
-  { name: 'My Prep Kits', icon: Folder, href: '/dashboard/kits' },
   { name: 'Create Kit', icon: PlusSquare, href: '/dashboard/create' },
+  { name: 'My Prep Kits', icon: Folder, href: '/dashboard/kits' },
 ];
 
 export function ClientSidebar() {
@@ -28,8 +28,8 @@ export function ClientSidebar() {
 
   const isActive = (href: string) => {
     if (href === '/dashboard') return pathname === '/dashboard';
-    if (href === '/dashboard/kits') return pathname.startsWith('/dashboard/kits') || pathname.startsWith('/kit/');
     if (href === '/dashboard/create') return pathname === '/dashboard/create';
+    if (href === '/dashboard/kits') return pathname.startsWith('/dashboard/kits') || pathname.startsWith('/kit/');
     return false;
   };
 
