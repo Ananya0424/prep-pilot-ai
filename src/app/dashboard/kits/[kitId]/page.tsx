@@ -620,11 +620,16 @@ export default function KitDetailPage() {
 
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => setActiveDayPractice({
-                              dayNum: day.day,
-                              dayFocus: cleanFocus,
-                              questions: linkedQs.length > 0 ? linkedQs : (kit.questions || []).slice(0, 3)
-                            })}
+                            onClick={() => {
+                              const pool = linkedQs.length >= 5
+                                ? linkedQs
+                                : [...linkedQs, ...(kit.questions || []).filter(q => !linkedQs.some(l => l.id === q.id))].slice(0, 5);
+                              setActiveDayPractice({
+                                dayNum: day.day,
+                                dayFocus: cleanFocus,
+                                questions: pool
+                              });
+                            }}
                             className="flex items-center gap-1.5 px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[11px] font-bold transition-all shadow-sm"
                           >
                             <PlayCircle className="w-3.5 h-3.5" />
@@ -642,17 +647,6 @@ export default function KitDetailPage() {
                           </button>
                         </div>
                       </div>
-
-                      {linkedQs.length > 0 && (
-                        <div className="mt-3 pt-3 border-t border-slate-100 space-y-1.5">
-                          {linkedQs.map((q, qIdx) => (
-                            <div key={q.id || qIdx} className="text-[12px] font-medium text-slate-700 flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
-                              <span className="truncate">{q.prompt}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   );
                 })}
