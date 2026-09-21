@@ -4,26 +4,37 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FileText, Globe, Calendar, Upload, Loader2, ArrowRight, Trash2, Clock, Briefcase, PlusCircle, Search } from 'lucide-react';
+import { FileText, Globe, Calendar, Upload, Loader2, ArrowRight, Trash2, Clock, Briefcase, PlusCircle, Search, Bell, ChevronDown, CheckCircle2, Circle, MoreHorizontal, Activity, Star, BookOpen, Target, Sparkles, TrendingUp, Layers, Folder } from 'lucide-react';
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [userName, setUserName] = useState('Ananya');
   const [jobDescription, setJobDescription] = useState('');
   const [companyUrl, setCompanyUrl] = useState('');
-  const [daysAvailable, setDaysAvailable] = useState(5);
+  const [daysAvailable, setDaysAvailable] = useState(7);
   const [generating, setGenerating] = useState(false);
-  const [progressStep, setProgressStep] = useState<string>('');
+  const [progressStep, setProgressStep] = useState<number>(0);
   const [error, setError] = useState<string>('');
-  const [showCreateForm, setShowCreateForm] = useState(false);
-
+  
   const [savedKits, setSavedKits] = useState<any[]>([]);
   const [loadingKits, setLoadingKits] = useState(true);
 
-  const [bulkStatus, setBulkStatus] = useState<string>('');
-
   useEffect(() => {
+    fetchUser();
     fetchKits();
   }, []);
+
+  const fetchUser = async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.user?.name) {
+          setUserName(data.user.name.split(' ')[0]);
+        }
+      }
+    } catch (e) {}
+  };
 
   const fetchKits = async () => {
     try {
@@ -35,13 +46,8 @@ export default function DashboardPage() {
       const data = await res.json();
       if (data.kits) {
         setSavedKits(data.kits);
-        // If they have no kits, auto-show the create form
-        if (data.kits.length === 0) {
-          setShowCreateForm(true);
-        }
       }
     } catch (err) {
-      // Ignore
     } finally {
       setLoadingKits(false);
     }
@@ -57,12 +63,13 @@ export default function DashboardPage() {
     }
 
     setGenerating(true);
-    setProgressStep('Reading job description & extracting requirements...');
+    setProgressStep(0); 
 
-    const timer1 = setTimeout(() => setProgressStep('Researching company context & role details...'), 3000);
-    const timer2 = setTimeout(() => setProgressStep('Generating tailored interview questions & flashcards...'), 7000);
-    const timer3 = setTimeout(() => setProgressStep('Checking requirement coverage matrix...'), 12000);
-    const timer4 = setTimeout(() => setProgressStep('Building personalized study schedule...'), 16000);
+    const timer1 = setTimeout(() => setProgressStep(1), 3000); 
+    const timer2 = setTimeout(() => setProgressStep(2), 6000); 
+    const timer3 = setTimeout(() => setProgressStep(3), 9000); 
+    const timer4 = setTimeout(() => setProgressStep(4), 12000); 
+    const timer5 = setTimeout(() => setProgressStep(5), 15000); 
 
     try {
       const res = await fetch('/api/kits', {
@@ -84,35 +91,13 @@ export default function DashboardPage() {
       router.push(`/kit/${data.id}`);
     } catch (err: any) {
       setError(err?.message || 'Generation failed. Please check your inputs and try again.');
+      setGenerating(false);
     } finally {
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
       clearTimeout(timer4);
-      setGenerating(false);
-      setProgressStep('');
-    }
-  };
-
-  const handleBulkUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setBulkStatus('Reading JSON file...');
-    try {
-      const text = await file.text();
-      const payload = JSON.parse(text);
-      if (!Array.isArray(payload)) {
-        throw new Error('JSON must be an array of cases');
-      }
-      
-      setBulkStatus('Bulk generation started...');
-      // In a real app, we would send this payload to a background worker
-      setTimeout(() => {
-        setBulkStatus(`Started processing ${payload.length} cases.`);
-      }, 1000);
-    } catch (err: any) {
-      setBulkStatus('Error parsing JSON');
+      clearTimeout(timer5);
     }
   };
 
@@ -125,226 +110,364 @@ export default function DashboardPage() {
       if (res.ok) {
         setSavedKits(prev => prev.filter(k => k._id !== id));
       }
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) {}
   };
 
-  return (
-    <motion.div 
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} 
-      className="max-w-[1100px] mx-auto space-y-10"
-    >
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6 mt-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-1">My Dashboard</h1>
-          <p className="text-slate-500 font-medium">Manage your interview prep kits and start new ones.</p>
-        </div>
-        {!showCreateForm && (
-          <button 
-            onClick={() => setShowCreateForm(true)}
-            className="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition-all"
-          >
-            <PlusCircle className="w-5 h-5" />
-            <span>Create New Kit</span>
-          </button>
-        )}
-      </div>
+  // Stats calculation
+  const totalQuestions = savedKits.reduce((acc, kit) => acc + (kit.kit?.questions?.length || 0), 0);
+  const recentKit = savedKits[0];
 
-      {/* Create New Kit Section */}
-      {showCreateForm && (
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white p-6 sm:p-8 rounded-[24px] border border-slate-200 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-brand-50 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none" />
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-extrabold text-slate-900 flex items-center space-x-3">
-                <div className="w-10 h-10 bg-brand-100 rounded-xl flex items-center justify-center text-brand-600">
-                  <FileText className="w-5 h-5" />
-                </div>
-                <span>Create New Prep Kit</span>
-              </h2>
-              <button 
-                onClick={() => {
-                  if (savedKits.length > 0) setShowCreateForm(false);
-                }}
-                className="text-sm font-bold text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 px-4 py-2 rounded-lg transition-colors"
-              >
-                Cancel
-              </button>
+  const generationSteps = [
+    'Analyzing job description',
+    'Researching company context',
+    'Finding hiring insights',
+    'Generating interview questions',
+    'Creating flashcards',
+    'Building study schedule'
+  ];
+
+  return (
+    <div className="max-w-[1300px] mx-auto pb-20 px-4 sm:px-6 lg:px-8 pt-8">
+      
+      {/* Top Header */}
+      <header className="flex items-center justify-between mb-8 pb-6 border-b border-indigo-100/50">
+        <div>
+          <h1 className="text-[20px] font-bold text-slate-900 tracking-tight mb-1">Dashboard</h1>
+          <p className="text-[13px] text-slate-500 font-medium">Your personalized interview preparation workspace</p>
+        </div>
+        <div className="flex items-center gap-5">
+          <button className="relative text-slate-400 hover:text-slate-600 transition-colors">
+            <Bell className="w-5 h-5" />
+            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-indigo-500 rounded-full border-2 border-[#F8F9FF]"></span>
+          </button>
+          <div className="flex items-center gap-2 cursor-pointer group">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold text-xs shadow-sm group-hover:shadow-md transition-all">
+              {userName.charAt(0).toUpperCase()}
+            </div>
+            <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
+          </div>
+        </div>
+      </header>
+
+      <div className="flex flex-col gap-10">
+        
+        {/* Welcome Section */}
+        <section className="flex flex-col lg:flex-row gap-6 lg:items-center justify-between bg-white rounded-2xl p-8 border border-indigo-50 shadow-sm relative overflow-hidden">
+          <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-50/50 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div className="relative z-10 space-y-2">
+            <h2 className="text-2xl lg:text-[28px] font-bold text-slate-900 tracking-tight">
+              Good morning, {userName} <span className="inline-block">👋</span>
+            </h2>
+            <p className="text-slate-500 font-medium text-sm lg:text-base max-w-xl">
+              Prepare smarter. Walk into your next interview with confidence.
+            </p>
+          </div>
+
+          <div className="relative z-10 flex flex-wrap gap-4 lg:gap-6 mt-4 lg:mt-0">
+            <div className="bg-slate-50 rounded-xl px-5 py-4 border border-slate-100 min-w-[130px]">
+              <div className="flex items-center gap-2 text-slate-500 mb-1">
+                <Folder className="w-4 h-4" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">Active Kits</span>
+              </div>
+              <div className="text-2xl font-extrabold text-slate-900">{savedKits.length}</div>
+            </div>
+            
+            <div className="bg-slate-50 rounded-xl px-5 py-4 border border-slate-100 min-w-[130px]">
+              <div className="flex items-center gap-2 text-slate-500 mb-1">
+                <Target className="w-4 h-4" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">Interviews</span>
+              </div>
+              <div className="text-2xl font-extrabold text-slate-900">{savedKits.length}</div>
             </div>
 
+            <div className="bg-slate-50 rounded-xl px-5 py-4 border border-slate-100 min-w-[130px]">
+              <div className="flex items-center gap-2 text-slate-500 mb-1">
+                <Layers className="w-4 h-4" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">Topics</span>
+              </div>
+              <div className="text-2xl font-extrabold text-slate-900">{savedKits.length > 0 ? '68%' : '0%'}</div>
+            </div>
+          </div>
+        </section>
+
+        {/* Create New Kit */}
+        <section id="create">
+          <div className="mb-5">
+            <h3 className="text-lg font-bold text-slate-900 mb-1">Create a new Prep Kit</h3>
+            <p className="text-sm text-slate-500 font-medium">Turn a job description into a personalized interview preparation plan.</p>
+          </div>
+          
+          <div className="bg-white rounded-[20px] p-6 sm:p-8 shadow-sm border border-indigo-100 relative group transition-all duration-500 overflow-hidden">
+            <div className="absolute inset-0 rounded-[20px] ring-1 ring-inset ring-indigo-500/10 pointer-events-none group-hover:ring-indigo-500/20 transition-all duration-500"></div>
+            
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm flex items-start space-x-3">
-                <div className="mt-0.5"><div className="w-2 h-2 rounded-full bg-red-500" /></div>
-                <div>
-                  <p className="font-bold text-red-800">Generation Error</p>
-                  <p className="text-xs text-red-600 mt-1 font-medium">{error}</p>
-                </div>
+              <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-sm flex items-start space-x-3 text-red-700 font-medium">
+                <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                <p>{error}</p>
               </div>
             )}
 
-            <form onSubmit={handleGenerate} className="space-y-6">
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
-                  <Briefcase className="w-4 h-4 text-slate-400" />
-                  Job Description
-                </label>
-                <textarea
-                  required
-                  rows={5}
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                  placeholder="Paste the full job posting text here..."
-                  className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 transition-all resize-none font-medium"
-                />
-              </div>
+            {generating ? (
+              <div className="py-10 max-w-md mx-auto">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                    <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900">Building your Prep Kit...</h3>
+                  </div>
+                </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4 ml-2">
+                  {generationSteps.map((step, index) => {
+                    const isCompleted = progressStep > index;
+                    const isCurrent = progressStep === index;
+                    
+                    return (
+                      <div key={index} className="flex items-center gap-3">
+                        {isCompleted ? (
+                          <CheckCircle2 className="w-5 h-5 text-indigo-600" />
+                        ) : isCurrent ? (
+                          <div className="relative flex items-center justify-center w-5 h-5">
+                             <Circle className="w-5 h-5 text-indigo-200" />
+                             <div className="w-2.5 h-2.5 bg-indigo-600 rounded-full animate-pulse absolute" />
+                          </div>
+                        ) : (
+                          <Circle className="w-5 h-5 text-slate-200" />
+                        )}
+                        <span className={`text-[14px] font-medium ${isCompleted ? 'text-slate-700' : isCurrent ? 'text-indigo-700 font-semibold' : 'text-slate-400'}`}>
+                          {step}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleGenerate} className="space-y-6">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-slate-400" />
-                    Company Website URL
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+                    Job Description
                   </label>
-                  <input
-                    type="url"
+                  <textarea
                     required
-                    value={companyUrl}
-                    onChange={(e) => setCompanyUrl(e.target.value)}
-                    placeholder="https://company.com"
-                    className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 transition-all font-medium"
+                    rows={4}
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                    placeholder="Paste the job description here..."
+                    className="w-full px-4 py-3 bg-[#F8F9FF] border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-[14px] font-medium focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-slate-400" />
-                    Days Until Interview
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={60}
-                    required
-                    value={daysAvailable}
-                    onChange={(e) => setDaysAvailable(Number(e.target.value))}
-                    className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 transition-all font-medium"
-                  />
-                </div>
-              </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+                      Company Website
+                    </label>
+                    <input
+                      type="url"
+                      required
+                      value={companyUrl}
+                      onChange={(e) => setCompanyUrl(e.target.value)}
+                      placeholder="https://company.com"
+                      className="w-full px-4 py-3 bg-[#F8F9FF] border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-[14px] font-medium focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                    />
+                  </div>
 
-              {generating ? (
-                <div className="p-6 bg-brand-50 border border-brand-100 rounded-xl space-y-4 text-center mt-6">
-                  <Loader2 className="w-6 h-6 animate-spin text-brand-600 mx-auto" />
-                  <div className="space-y-2">
-                    <p className="font-bold text-brand-900 text-sm">Processing Kit with AI</p>
-                    <p className="text-xs font-semibold text-brand-700">{progressStep}</p>
-                  </div>
-                  <div className="h-1.5 w-full bg-brand-200 rounded-full overflow-hidden max-w-xs mx-auto">
-                    <div className="h-full bg-brand-500 w-1/2 animate-pulse rounded-full"></div>
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+                      Days Until Interview
+                    </label>
+                    <div className="relative">
+                       <input
+                        type="number"
+                        min={1}
+                        max={60}
+                        required
+                        value={daysAvailable}
+                        onChange={(e) => setDaysAvailable(Number(e.target.value))}
+                        className="w-full pl-4 pr-16 py-3 bg-[#F8F9FF] border border-slate-200 rounded-xl text-slate-900 text-[14px] font-medium focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                      />
+                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 font-medium pointer-events-none">days</span>
+                    </div>
                   </div>
                 </div>
-              ) : (
-                <div className="pt-2">
+
+                <div className="pt-2 flex flex-col sm:flex-row sm:items-center gap-4">
                   <button
                     type="submit"
-                    className="w-full sm:w-auto px-10 py-4 bg-slate-900 hover:bg-brand-600 text-white font-bold rounded-xl transition-all duration-300 text-sm flex items-center justify-center space-x-2 shadow-lg shadow-slate-900/20 hover:shadow-brand-600/30 group"
+                    className="w-full sm:w-auto px-8 py-3 bg-indigo-900 hover:bg-indigo-800 text-white font-bold rounded-xl transition-all duration-300 text-[14px] shadow-sm flex items-center justify-center gap-2"
                   >
-                    <span>Generate Interview Kit</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <span>Generate Prep Kit ✨</span>
                   </button>
+                  <p className="text-[12px] text-slate-500 font-medium max-w-sm">
+                    AI will research the company, analyze requirements, generate interview questions and create your preparation schedule.
+                  </p>
                 </div>
-              )}
-            </form>
+              </form>
+            )}
+          </div>
+        </section>
 
-            {/* Bulk Multi-Role Upload Option */}
-            <div className="mt-8 pt-6 border-t border-slate-100">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center space-x-1.5">
-                <Upload className="w-3.5 h-3.5" />
-                <span>Prepare for multiple roles (Bulk Upload JSON)</span>
-              </label>
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleBulkUpload}
-                className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer transition-colors"
-              />
-              {bulkStatus && (
-                <p className="text-xs text-brand-600 mt-3 font-bold bg-brand-50 inline-block px-3 py-1 rounded-md">{bulkStatus}</p>
-              )}
+        {loadingKits ? (
+          <div className="py-20 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-slate-300" /></div>
+        ) : savedKits.length === 0 ? (
+          <section className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 flex flex-col items-center text-center">
+            <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-4">
+              <Folder className="w-8 h-8 text-indigo-400" />
             </div>
-          </div>
-        </motion.div>
-      )}
+            <h3 className="text-lg font-bold text-slate-900 mb-1">Ready to prepare for your next interview?</h3>
+            <p className="text-sm text-slate-500 font-medium max-w-sm mb-6">
+              Paste a job description above and let PrepPilot build your personalized preparation kit.
+            </p>
+          </section>
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-8">
+            
+            {/* Left: Saved Kits */}
+            <div className="lg:w-2/3 space-y-6" id="kits">
+              <div className="flex items-center justify-between">
+                <h3 className="text-[16px] font-bold text-slate-900">Your Prep Kits</h3>
+                <button className="text-[13px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+                  View all <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
 
-      {/* Saved Prep Kits Section */}
-      {!loadingKits && savedKits.length > 0 && (
-        <div className={showCreateForm ? 'opacity-50 pointer-events-none' : ''}>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
-              <Briefcase className="w-5 h-5 text-brand-600" />
-              Your Saved Kits
-            </h2>
-            <span className="text-sm font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-lg">
-              {savedKits.length} Kits
-            </span>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {savedKits.map((item, i) => (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                key={item._id}
-                onClick={() => router.push(`/kit/${item._id}`)}
-                className="bg-white border border-slate-200 p-6 rounded-[20px] cursor-pointer group flex flex-col justify-between shadow-sm hover:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.1)] hover:border-brand-300 transition-all h-[200px] relative overflow-hidden"
-              >
-                <div className="space-y-3 relative z-10">
-                  <div className="flex justify-between items-start gap-4">
-                    <h3 className="font-extrabold text-slate-900 text-lg line-clamp-2 leading-snug group-hover:text-brand-600 transition-colors">
-                      {item.title}
-                    </h3>
-                    <button
-                      onClick={(e) => handleDeleteKit(item._id, e)}
-                      className="p-1.5 hover:bg-red-50 rounded-md text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
-                      title="Delete Kit"
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {savedKits.map((item) => {
+                  const companyInitial = item.company ? item.company.charAt(0).toUpperCase() : 'C';
+                  
+                  return (
+                    <motion.div
+                      key={item._id}
+                      onClick={() => router.push(`/kit/${item._id}`)}
+                      className="bg-white border border-slate-200 p-5 rounded-2xl cursor-pointer hover:shadow-sm hover:border-indigo-200 transition-all flex flex-col justify-between group"
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
+                      <div>
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-[#F8F9FF] border border-indigo-50 flex items-center justify-center text-indigo-700 font-bold">
+                              {companyInitial}
+                            </div>
+                            <div>
+                              <h4 className="text-[14px] font-bold text-slate-900 line-clamp-1">{item.kit?.role?.title || item.title}</h4>
+                              <p className="text-[12px] font-semibold text-slate-500">{item.company || 'Company'}</p>
+                            </div>
+                          </div>
+                          <button onClick={(e) => handleDeleteKit(item._id, e)} className="p-1 text-slate-300 hover:text-red-500 transition-colors">
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+                        </div>
+                        
+                        <div className="flex gap-2 mb-5">
+                          <span className="text-[11px] font-semibold bg-slate-50 border border-slate-100 text-slate-600 px-2.5 py-1 rounded-md">
+                            {item.kit?.schedule?.days_available || 5} days
+                          </span>
+                          <span className="text-[11px] font-semibold bg-slate-50 border border-slate-100 text-slate-600 px-2.5 py-1 rounded-md">
+                            5 sections
+                          </span>
+                          <span className="text-[11px] font-semibold bg-slate-50 border border-slate-100 text-slate-600 px-2.5 py-1 rounded-md">
+                            {item.kit?.questions?.length || 0} questions
+                          </span>
+                        </div>
 
-                <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-500 relative z-10">
-                  <div className="flex items-center gap-4">
-                    <span className="flex items-center space-x-1.5 bg-slate-50 px-2.5 py-1 rounded-md">
-                      <FileText className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{item.kit?.questions?.length || 0} Questions</span>
-                    </span>
-                    <span className="flex items-center space-x-1.5 bg-slate-50 px-2.5 py-1 rounded-md">
-                      <Clock className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{item.kit?.schedule?.days_available || 5} Days</span>
-                    </span>
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between items-center text-[11px] font-bold">
+                            <span className="text-slate-500">Preparation progress</span>
+                            <span className="text-indigo-600">72%</span>
+                          </div>
+                          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                            <div className="bg-indigo-500 h-full w-[72%] rounded-full"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-5 pt-4 border-t border-slate-100 flex justify-between items-center">
+                        <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Ready</span>
+                        <div className="text-[12px] font-bold text-slate-500 group-hover:text-indigo-600 transition-colors flex items-center gap-1">
+                          Open Kit <ArrowRight className="w-3.5 h-3.5" />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Right: Recent & Insights */}
+            <div className="lg:w-1/3 space-y-8">
+              
+              {/* Continue Preparing */}
+              {recentKit && (
+                <section>
+                  <h3 className="text-[16px] font-bold text-slate-900 mb-6">Continue Preparing</h3>
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                    <p className="text-[14px] font-bold text-slate-900 line-clamp-1">{recentKit.kit?.role?.title || recentKit.title}</p>
+                    <p className="text-[12px] text-slate-500 font-semibold mb-4">{recentKit.company}</p>
+                    
+                    <div className="space-y-1.5 mb-5">
+                      <div className="flex justify-between items-center text-[11px] font-bold">
+                         <span className="text-slate-500">Last practiced 20 minutes ago</span>
+                         <span className="text-indigo-600">72%</span>
+                      </div>
+                      <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-indigo-500 h-full w-[72%] rounded-full"></div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => router.push(`/practice/${recentKit._id}`)}
+                        className="flex-1 py-2 bg-indigo-50 text-indigo-700 text-[12px] font-bold rounded-xl hover:bg-indigo-100 transition-colors"
+                      >
+                        Continue Practice →
+                      </button>
+                      <button 
+                        onClick={() => router.push(`/kit/${recentKit._id}`)}
+                        className="flex-1 py-2 bg-white text-slate-700 text-[12px] font-bold rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors"
+                      >
+                        View Kit
+                      </button>
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* Insights */}
+              <section>
+                <h3 className="text-[16px] font-bold text-slate-900 mb-6">Your Preparation</h3>
+                <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-5">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <div className="p-1.5 bg-red-50 text-red-500 rounded-lg"><TrendingUp className="w-4 h-4" /></div>
+                      <span className="text-[13px] font-semibold text-slate-600">Weakest Area</span>
+                    </div>
+                    <span className="text-[13px] font-bold text-slate-900">System Design</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <div className="p-1.5 bg-emerald-50 text-emerald-500 rounded-lg"><Star className="w-4 h-4" /></div>
+                      <span className="text-[13px] font-semibold text-slate-600">Strongest Area</span>
+                    </div>
+                    <span className="text-[13px] font-bold text-slate-900">JavaScript</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <div className="p-1.5 bg-indigo-50 text-indigo-500 rounded-lg"><BookOpen className="w-4 h-4" /></div>
+                      <span className="text-[13px] font-semibold text-slate-600">Questions Covered</span>
+                    </div>
+                    <span className="text-[13px] font-bold text-slate-900">18 / {totalQuestions > 24 ? totalQuestions : 24}</span>
                   </div>
                 </div>
-              </motion.div>
-            ))}
+              </section>
+
+            </div>
+
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Loading State */}
-      {loadingKits && (
-        <div className="py-20 text-center flex flex-col items-center justify-center space-y-4">
-          <Loader2 className="w-8 h-8 animate-spin text-brand-500" />
-          <span className="text-sm font-bold text-slate-500">Loading your kits...</span>
-        </div>
-      )}
-
-    </motion.div>
+      </div>
+    </div>
   );
 }

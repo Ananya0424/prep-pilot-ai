@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { ClientNavbar } from '@/components/ClientNavbar';
+import { ClientSidebar } from '@/components/ClientSidebar';
 
 export const metadata: Metadata = {
   title: 'PrepPilot AI - Personalised AI Interview Prep Kits',
@@ -14,9 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans">
-        <ClientNavbar />
-        <main className="flex-1 w-full relative">
+      <body className="bg-[#F8F9FF] text-slate-900 min-h-screen flex flex-col font-sans">
+        <ClientSidebar />
+        <main className="flex-1 w-full relative pt-16 lg:pt-0 lg:pl-[240px]">
           {children}
         </main>
 
