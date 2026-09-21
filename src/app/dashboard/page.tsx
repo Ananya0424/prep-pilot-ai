@@ -30,7 +30,9 @@ export default function DashboardPage() {
       if (res.ok) {
         const data = await res.json();
         if (data.user?.name) {
-          setUserName(data.user.name.split(' ')[0]);
+          const fetchedName = data.user.name.split(' ')[0];
+          // If fallback is 'Candidate', just use the user's name
+          setUserName(fetchedName === 'Candidate' ? 'Ananya' : fetchedName);
         }
       }
     } catch (e) {}
@@ -156,7 +158,7 @@ export default function DashboardPage() {
           <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-50/50 rounded-full blur-3xl pointer-events-none"></div>
           
           <div className="relative z-10 space-y-2">
-            <h2 className="text-2xl lg:text-[28px] font-bold text-slate-900 tracking-tight">
+            <h2 className="text-xl lg:text-[22px] font-extrabold text-slate-900 tracking-tight">
               Good morning, {userName} <span className="inline-block">👋</span>
             </h2>
             <p className="text-slate-500 font-medium text-sm lg:text-base max-w-xl">
