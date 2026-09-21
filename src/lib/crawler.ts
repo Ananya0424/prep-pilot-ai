@@ -179,7 +179,7 @@ export async function crawlCompanySite(companyUrl: string, maxPages = 4): Promis
         validateStatus: (status) => status < 400
       });
 
-      const contentType = resp.headers['content-type'] || '';
+      const contentType = String(resp.headers['content-type'] || '');
       if (!contentType.includes('text/html') && !contentType.includes('text/plain')) {
          throw new Error('Invalid content type. Only HTML or text is allowed.');
       }
@@ -225,7 +225,7 @@ export async function crawlCompanySite(companyUrl: string, maxPages = 4): Promis
             validateStatus: (status) => status < 400
           });
 
-          const pageContentType = pageResp.headers['content-type'] || '';
+          const pageContentType = String(pageResp.headers['content-type'] || '');
           if (!pageContentType.includes('text/html') && !pageContentType.includes('text/plain')) {
             throw new Error('Invalid content type');
           }
