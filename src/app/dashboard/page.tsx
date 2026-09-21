@@ -28,11 +28,18 @@ export default function DashboardPage() {
       const res = await fetch('/api/auth/me');
       if (res.ok) {
         const data = await res.json();
-        if (data.user?.name) {
-          const first = data.user.name.split(' ')[0];
-          setUserName(first === 'Candidate' ? '' : first);
+        if (data.user) {
+          if (data.user.email) setUserEmail(data.user.email);
+          
+          if (data.user.name && data.user.name !== 'Candidate') {
+            setUserName(data.user.name.split(' ')[0]);
+          } else if (data.user.email) {
+            const prefix = data.user.email.split('@')[0];
+            const clean = prefix.split('.')[0].replace(/[0-9]/g, '');
+            const displayName = clean ? clean.charAt(0).toUpperCase() + clean.slice(1) : prefix;
+            setUserName(displayName);
+          }
         }
-        if (data.user?.email) setUserEmail(data.user.email);
       }
     } catch (e) {}
   };

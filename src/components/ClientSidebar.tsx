@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   LayoutDashboard, Folder, PlusSquare,
   PlayCircle, Calendar, Settings, LogOut, Menu, X
@@ -10,8 +10,8 @@ import {
 
 const navItems = [
   { name: 'Overview', icon: LayoutDashboard, href: '/dashboard' },
-  { name: 'My Prep Kits', icon: Folder, href: '/dashboard/kits' },
   { name: 'Create Kit', icon: PlusSquare, href: '/dashboard/create' },
+  { name: 'My Prep Kits', icon: Folder, href: '/dashboard/kits' },
   { name: 'Schedule', icon: Calendar, href: '/dashboard/schedule' },
   { name: 'Practice', icon: PlayCircle, href: '/dashboard/practice' },
 ];
@@ -20,18 +20,6 @@ export function ClientSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
-  const [userName, setUserName] = useState('');
-
-  useEffect(() => {
-    fetch('/api/auth/me').then(r => r.ok ? r.json() : null).then(data => {
-      if (data?.user) {
-        const first = (data.user.name || '').split(' ')[0];
-        setUserName(first === 'Candidate' ? '' : first);
-        setUserEmail(data.user.email || '');
-      }
-    }).catch(() => {});
-  }, []);
 
   // Hide on auth/marketing pages
   if (pathname === '/' || pathname === '/login' || pathname === '/register') return null;
@@ -46,8 +34,6 @@ export function ClientSidebar() {
     if (href.startsWith('/dashboard/')) return pathname === href;
     return false;
   };
-
-  const avatarLetter = (userName || userEmail || 'U').charAt(0).toUpperCase();
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-white">
@@ -87,37 +73,27 @@ export function ClientSidebar() {
         })}
       </nav>
 
-      {/* Bottom: Settings + User + Logout */}
-      <div className="border-t border-slate-100 flex-shrink-0">
-        <div className="px-3 py-2">
-          <button className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
-            <Settings className="w-[17px] h-[17px] text-slate-400" />
-            Settings
-          </button>
-        </div>
-
-        {/* User info strip */}
-        {userEmail && (
-          <div className="mx-3 mb-2 flex items-center gap-3 px-3 py-3 bg-slate-50 rounded-xl border border-slate-100">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-[13px] flex-shrink-0 shadow-sm">
-              {avatarLetter}
-            </div>
-            <div className="min-w-0 flex-1">
-              {userName && <p className="text-[12px] font-bold text-slate-800 truncate">{userName}</p>}
-              <p className="text-[11px] text-slate-400 font-medium truncate">{userEmail}</p>
-            </div>
-          </div>
-        )}
-
-        <div className="px-3 pb-3">
-          <button
-            onClick={handleLogout}
-            className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
-          >
-            <LogOut className="w-[17px] h-[17px] text-slate-400" />
-            Logout
-          </button>
-        </div>
+      {/* Bottom: Settings + Logout (No email box) */}
+      <div className="border-t border-slate-100 flex-shrink-0 p-3 space-y-0.5">
+        <Link
+          href="/dashboard/settings"
+          onClick={() => setMobileOpen(false)}
+          className={`flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-colors ${
+            pathname === '/dashboard/settings'
+              ? 'bg-indigo-50 text-indigo-700 font-bold'
+              : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+          }`}
+        >
+          <Settings className={`w-[17px] h-[17px] ${pathname === '/dashboard/settings' ? 'text-indigo-600' : 'text-slate-400'}`} />
+          Settings
+        </Link>
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+        >
+          <LogOut className="w-[17px] h-[17px] text-slate-400" />
+          Logout
+        </button>
       </div>
     </div>
   );
