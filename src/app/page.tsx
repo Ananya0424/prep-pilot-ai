@@ -54,7 +54,7 @@ export default function LandingPage() {
       </div>
 
       {/* Header */}
-      <header className="w-full px-6 py-2 lg:px-10 lg:py-3 relative z-10 flex items-center shrink-0">
+      <header className="w-full px-6 py-2 lg:px-10 lg:py-2 relative z-10 flex items-center shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
             P
@@ -66,67 +66,66 @@ export default function LandingPage() {
       </header>
 
       {/* Main Content */}
-      {/* Main Content */}
-      <main className="flex-1 w-full max-w-[1280px] mx-auto px-6 lg:px-10 pt-4 pb-12 flex items-center relative z-10">
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      <main className="flex-1 w-full max-w-[1280px] mx-auto px-6 lg:px-10 pt-1 pb-6 flex items-start lg:items-center relative z-10">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
           
           {/* Left Side: Hero Content */}
           <div className="lg:col-span-6 flex flex-col pr-0 lg:pr-4">
             
-            <div className="inline-flex items-center gap-1.5 mb-3 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 w-fit">
+            <div className="inline-flex items-center gap-1.5 mb-2.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 w-fit">
               <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
               <span className="text-[10px] font-extrabold tracking-[0.1em] text-indigo-600 uppercase">
                 AI-Powered Interview Preparation
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-[36px] xl:text-[40px] font-extrabold text-slate-900 tracking-tight leading-[1.15] mb-3">
+            <h1 className="text-3xl sm:text-4xl lg:text-[36px] xl:text-[40px] font-extrabold text-slate-900 tracking-tight leading-[1.15] mb-2.5">
               Your Personalized <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">Interview Prep Kit</span> with AI
             </h1>
             
-            <p className="text-[14px] sm:text-[15px] text-slate-500 font-medium leading-relaxed max-w-xl mb-6">
+            <p className="text-[13px] sm:text-[14px] text-slate-500 font-medium leading-relaxed max-w-xl mb-4">
               Turn any job description and company website into a complete interview preparation kit — with research, tailored questions, flashcards and a day-by-day study plan.
             </p>
             
             {/* 4 Feature Items */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl">
-              <div className="flex items-start gap-3 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl shadow-sm">
-                <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-xl">
+              <div className="flex items-start gap-2.5 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-2.5 rounded-xl shadow-sm">
+                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
                   <Building2 className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="text-[13px] font-bold text-slate-900">Company Research</h3>
-                  <p className="text-[12px] text-slate-500 leading-snug font-medium mt-0.5">Understand company culture & hiring process</p>
+                  <p className="text-[11px] text-slate-500 leading-tight font-medium mt-0.5">Understand company culture & hiring process</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl shadow-sm">
-                <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <div className="flex items-start gap-2.5 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-2.5 rounded-xl shadow-sm">
+                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
                   <Target className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="text-[13px] font-bold text-slate-900">Role Analysis</h3>
-                  <p className="text-[12px] text-slate-500 leading-snug font-medium mt-0.5">Extract key skills & must-have expectations</p>
+                  <p className="text-[11px] text-slate-500 leading-tight font-medium mt-0.5">Extract key skills & must-have expectations</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl shadow-sm">
-                <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+              <div className="flex items-start gap-2.5 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-2.5 rounded-xl shadow-sm">
+                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600">
                   <MessageSquare className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="text-[13px] font-bold text-slate-900">Smart Questions</h3>
-                  <p className="text-[12px] text-slate-500 leading-snug font-medium mt-0.5">Role-specific & behavioral questions</p>
+                  <p className="text-[11px] text-slate-500 leading-tight font-medium mt-0.5">Role-specific & behavioral questions</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl shadow-sm">
-                <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+              <div className="flex items-start gap-2.5 bg-white/80 backdrop-blur-sm border border-slate-200/80 p-2.5 rounded-xl shadow-sm">
+                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
                   <Calendar className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="text-[13px] font-bold text-slate-900">Study Schedule</h3>
-                  <p className="text-[12px] text-slate-500 leading-snug font-medium mt-0.5">Daily study plan tailored to your timeline</p>
+                  <p className="text-[11px] text-slate-500 leading-tight font-medium mt-0.5">Daily study plan tailored to your timeline</p>
                 </div>
               </div>
             </div>
@@ -135,13 +134,10 @@ export default function LandingPage() {
 
           {/* Right Side: Login Card */}
           <div className="lg:col-span-6 w-full flex justify-center lg:justify-end">
-            <div className="w-full max-w-[440px] bg-white border border-slate-200 rounded-[24px] p-6 sm:p-7 shadow-xl shadow-slate-200/50">
+            <div className="w-full max-w-[420px] bg-white border border-slate-200 rounded-[20px] p-5 sm:p-6 shadow-xl shadow-slate-200/50">
               
-              <div className="mb-5">
-                <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-xl shadow-sm mb-3 hidden sm:flex">
-                  P
-                </div>
-                <h2 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight mb-1">
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-0.5">
                   Continue Your Preparation
                 </h2>
                 <p className="text-xs text-slate-500 font-medium">
@@ -153,16 +149,16 @@ export default function LandingPage() {
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="mb-3 p-2 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-medium flex items-center gap-2 shadow-sm"
+                  className="mb-2.5 p-2 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-medium flex items-center gap-2 shadow-sm"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
                   {error}
                 </motion.div>
               )}
 
-              <form onSubmit={handleLogin} className="space-y-3">
+              <form onSubmit={handleLogin} className="space-y-2.5">
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-600 mb-1">Email Address</label>
+                  <label className="block text-[10px] font-bold text-slate-600 mb-0.5">Email Address</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                       <Mail className="w-4 h-4" />
@@ -172,14 +168,14 @@ export default function LandingPage() {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 text-sm transition-all font-medium shadow-sm hover:border-slate-300"
+                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 text-xs transition-all font-medium shadow-sm hover:border-slate-300"
                       placeholder="you@example.com"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center justify-between mb-0.5">
                     <label className="block text-[10px] font-bold text-slate-600">Password</label>
                     <Link href="#" className="text-[10px] font-bold text-brand-600 hover:text-brand-700 hover:underline">
                       Forgot password?
@@ -194,7 +190,7 @@ export default function LandingPage() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 text-sm transition-all font-medium shadow-sm hover:border-slate-300"
+                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 text-xs transition-all font-medium shadow-sm hover:border-slate-300"
                       placeholder="Enter your password"
                     />
                   </div>
@@ -203,7 +199,7 @@ export default function LandingPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2 mt-1 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg shadow-[0_8px_20px_-8px_rgba(79,70,229,0.6)] hover:shadow-[0_12px_25px_-8px_rgba(79,70,229,0.7)] hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 text-sm relative group flex items-center justify-center gap-2"
+                  className="w-full py-2 mt-1 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg shadow-[0_8px_20px_-8px_rgba(79,70,229,0.6)] hover:shadow-[0_12px_25px_-8px_rgba(79,70,229,0.7)] hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 text-xs relative group flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
@@ -221,18 +217,15 @@ export default function LandingPage() {
                 </button>
               </form>
 
-              <div className="mt-4 pt-4 border-t border-slate-100 flex flex-col items-center gap-2.5">
-                <p className="text-[11px] text-slate-500 font-medium text-center">
+              <div className="mt-3.5 pt-3 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-[11px] text-slate-500 font-medium">
                   Don&apos;t have an account?
-                </p>
+                </span>
                 <Link 
                   href="/register" 
-                  className="w-full py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg shadow-sm transition-all text-[13px] text-center flex items-center justify-center gap-2"
+                  className="text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline flex items-center gap-1"
                 >
-                  <svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-                  </svg>
-                  Create a Free Account
+                  Create a Free Account →
                 </Link>
               </div>
 
