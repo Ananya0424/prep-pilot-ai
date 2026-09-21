@@ -69,7 +69,7 @@ export async function runPrepKitPipeline(options: PipelineOptions): Promise<Prep
     }))
   ]);
 
-  const { companyBrief, companyName } = briefResult;
+  const { brief: companyBrief, companyName } = briefResult;
   const { questions, flashcards } = qResult;
 
   // Step 3: Check coverage
