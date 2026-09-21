@@ -4,17 +4,16 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import {
-  LayoutDashboard, Folder, PlusSquare, Layers,
+  LayoutDashboard, Folder, PlusSquare,
   PlayCircle, Calendar, Settings, LogOut, Menu, X
 } from 'lucide-react';
 
 const navItems = [
   { name: 'Overview', icon: LayoutDashboard, href: '/dashboard' },
-  { name: 'Create Kit', icon: PlusSquare, href: '/dashboard/create' },
   { name: 'My Prep Kits', icon: Folder, href: '/dashboard/kits' },
-  { name: 'Flashcards', icon: Layers, href: '/dashboard/kits' },
-  { name: 'Practice', icon: PlayCircle, href: '/dashboard/kits' },
-  { name: 'Schedule', icon: Calendar, href: '/dashboard/kits' },
+  { name: 'Create Kit', icon: PlusSquare, href: '/dashboard/create' },
+  { name: 'Schedule', icon: Calendar, href: '/dashboard/schedule' },
+  { name: 'Practice', icon: PlayCircle, href: '/dashboard/practice' },
 ];
 
 export function ClientSidebar() {
@@ -42,15 +41,9 @@ export function ClientSidebar() {
     router.push('/');
   };
 
-  const isActive = (href: string, name: string) => {
-    // Exact match for main pages
-    if (href === '/dashboard' && name === 'Overview') return pathname === '/dashboard';
-    if (href === '/dashboard/kits' && name === 'My Prep Kits') return pathname === '/dashboard/kits';
-    if (href === '/dashboard/create') return pathname === '/dashboard/create';
-    // Flashcards/Practice/Schedule active when on kits or practice pages
-    if (name === 'Flashcards' || name === 'Practice' || name === 'Schedule') {
-      return pathname.startsWith('/practice/') || pathname.startsWith('/kit/');
-    }
+  const isActive = (href: string) => {
+    if (href === '/dashboard') return pathname === '/dashboard';
+    if (href.startsWith('/dashboard/')) return pathname === href;
     return false;
   };
 
@@ -71,7 +64,7 @@ export function ClientSidebar() {
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
-          const active = isActive(item.href, item.name);
+          const active = isActive(item.href);
           return (
             <Link
               key={item.name}
@@ -79,7 +72,7 @@ export function ClientSidebar() {
               onClick={() => setMobileOpen(false)}
               className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all
                 ${active
-                  ? 'bg-indigo-50 text-indigo-700'
+                  ? 'bg-indigo-50 text-indigo-700 font-bold'
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
             >
@@ -88,7 +81,7 @@ export function ClientSidebar() {
                 <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-indigo-600 rounded-r-full" />
               )}
               <item.icon className={`w-[17px] h-[17px] flex-shrink-0 transition-colors ${active ? 'text-indigo-600' : 'text-slate-400'}`} />
-              <span className={active ? 'font-bold' : ''}>{item.name}</span>
+              <span>{item.name}</span>
             </Link>
           );
         })}
