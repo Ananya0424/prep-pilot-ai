@@ -1008,8 +1008,8 @@ function FlashcardEditorCard({
       className="bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-indigo-300 hover:shadow-sm transition-all min-h-[160px] flex flex-col justify-between group relative"
     >
       <div className="flex justify-between items-start">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-500">
-          {flipped ? 'Back (Answer)' : 'Front (Question)'}
+        <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+          {flipped ? 'Answer Key' : 'Question'}
         </span>
         <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
           <button onClick={() => setEditing(true)} className="p-1 text-slate-300 hover:text-indigo-600"><Edit3 className="w-3.5 h-3.5" /></button>
