@@ -82,20 +82,35 @@ export default function CreateKitPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setBulkStatus('Reading JSON file...');
     try {
       const text = await file.text();
-      const payload = JSON.parse(text);
-      if (!Array.isArray(payload)) {
-        throw new Error('JSON must be an array of cases');
+
+      // If text/markdown file, auto-populate the textarea
+      if (file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+        setJobDescription(text);
+        setBulkStatus('✓ Job description loaded from text file!');
+        return;
       }
-      
-      setBulkStatus('Bulk generation started...');
-      setTimeout(() => {
-        setBulkStatus(`Started processing ${payload.length} cases.`);
-      }, 1000);
+
+      // JSON parsing for Appendix B cases array
+      const payload = JSON.parse(text);
+      if (Array.isArray(payload)) {
+        setBulkStatus(`✓ Loaded ${payload.length} job description case(s) from JSON.`);
+        if (payload.length > 0 && payload[0].jd) {
+          setJobDescription(payload[0].jd);
+          if (payload[0].company_url) setCompanyUrl(payload[0].company_url);
+          if (payload[0].days) setDaysAvailable(payload[0].days);
+        }
+      } else if (payload.jd) {
+        setJobDescription(payload.jd);
+        if (payload.company_url) setCompanyUrl(payload.company_url);
+        if (payload.days) setDaysAvailable(payload.days);
+        setBulkStatus('✓ Loaded job description case from JSON!');
+      } else {
+        throw new Error('Invalid JSON format');
+      }
     } catch (err: any) {
-      setBulkStatus('Error parsing JSON');
+      setBulkStatus('⚠️ Error reading file. Upload a .txt file or valid JSON array.');
     }
   };
 
@@ -248,16 +263,26 @@ export default function CreateKitPage() {
                   <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Multiple Roles — Bulk Upload</span>
                   <div className="flex-1 h-px bg-slate-100 ml-1" />
                 </div>
-                <p className="text-[12px] text-slate-400 mb-3 font-medium">Upload a JSON array of job descriptions to generate multiple kits at once.</p>
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={handleBulkUpload}
-                  className="text-[12px] text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[12px] file:font-bold file:bg-slate-100 file:text-slate-600 hover:file:bg-slate-200 cursor-pointer transition-colors"
-                />
-                {bulkStatus && (
-                  <p className="mt-2 text-[12px] font-semibold text-indigo-600 bg-indigo-50 inline-block px-3 py-1 rounded-lg">{bulkStatus}</p>
-                )}
+                <p className="text-[12px] text-slate-500 mb-3 font-medium">
+                  Upload a <strong>.json</strong> array of job description cases (or a <strong>.txt</strong> file) to auto-fill your form.
+                </p>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                  <input
+                    type="file"
+                    accept=".json,.txt,.md"
+                    onChange={handleBulkUpload}
+                    className="text-[12px] text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[12px] file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-indigo-50 hover:file:text-indigo-700 cursor-pointer transition-colors"
+                  />
+                  {bulkStatus && (
+                    <span className="text-[12px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-xl">
+                      {bulkStatus}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-3 bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-[11px] text-slate-500 font-mono">
+                  <span className="font-bold text-slate-700 block mb-1 font-sans">JSON Format Example (Appendix B Spec):</span>
+                  <code>{`[ { "id": "case-01", "jd": "Job description text...", "company_url": "https://company.com", "days": 7 } ]`}</code>
+                </div>
               </div>
 
             </form>
