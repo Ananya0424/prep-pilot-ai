@@ -609,7 +609,7 @@ export default function KitDetailPage() {
                             {isDone ? '✓' : day.day}
                           </span>
                           <div>
-                            <h3 className={`text-[14px] font-bold ${isDone ? 'text-emerald-800 line-through decoration-emerald-300' : 'text-slate-900'}`}>
+                            <h3 className={`text-[14px] font-bold ${isDone ? 'text-emerald-700' : 'text-slate-900'}`}>
                               Day {day.day}: {cleanFocus}
                             </h3>
                             <p className="text-[12px] font-medium text-slate-400">
@@ -681,6 +681,7 @@ export default function KitDetailPage() {
           questions={activeDayPractice.questions}
           totalDays={kit.schedule?.days?.length || 7}
           onClose={() => setActiveDayPractice(null)}
+          onRateConfidence={updateConfidence}
           onCompleteDay={() => {
             markDayDone(activeDayPractice.dayNum);
           }}
@@ -707,7 +708,7 @@ export default function KitDetailPage() {
 
 // ─── Sub-Component: DayPracticeModal ─────────────────────────────────────────
 function DayPracticeModal({
-  dayNum, dayFocus, questions, totalDays, onClose, onCompleteDay, onNextDay,
+  dayNum, dayFocus, questions, totalDays, onClose, onCompleteDay, onNextDay, onRateConfidence,
 }: {
   dayNum: number;
   dayFocus: string;
@@ -716,6 +717,7 @@ function DayPracticeModal({
   onClose: () => void;
   onCompleteDay: () => void;
   onNextDay: () => void;
+  onRateConfidence?: (cardId: string, c: Confidence) => void;
 }) {
   const [qIdx, setQIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -804,11 +806,45 @@ function DayPracticeModal({
               <p className="text-[15px] font-bold text-slate-900 leading-snug">{currentQ?.prompt}</p>
             </div>
 
-            {/* Answer Outline Box */}
             {revealed ? (
-              <div className="bg-indigo-50/70 border border-indigo-200 rounded-2xl p-5 space-y-2 animate-fadeIn">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Answer Key & Outline</p>
-                <p className="text-[13px] font-medium text-slate-800 leading-relaxed whitespace-pre-line">{currentQ?.answer_outline}</p>
+              <div className="space-y-4 pt-2">
+                <div className="bg-indigo-50/70 border border-indigo-200 rounded-2xl p-5 space-y-2 animate-fadeIn">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Answer Key & Outline</p>
+                  <p className="text-[13px] font-medium text-slate-800 leading-relaxed whitespace-pre-line">{currentQ?.answer_outline}</p>
+                </div>
+
+                <div className="space-y-2 text-center pt-2">
+                  <p className="text-[12px] font-bold text-slate-600">Rate your confidence to move to the next question:</p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => {
+                        if (currentQ) onRateConfidence?.(currentQ.id, 'low');
+                        handleNext();
+                      }}
+                      className="flex-1 py-2.5 bg-red-50 hover:bg-red-100 active:scale-[0.98] text-red-700 font-bold border border-red-200 rounded-xl text-[13px] transition-all"
+                    >
+                      👎 Low
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (currentQ) onRateConfidence?.(currentQ.id, 'medium');
+                        handleNext();
+                      }}
+                      className="flex-1 py-2.5 bg-amber-50 hover:bg-amber-100 active:scale-[0.98] text-amber-700 font-bold border border-amber-200 rounded-xl text-[13px] transition-all"
+                    >
+                      ✊ Medium
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (currentQ) onRateConfidence?.(currentQ.id, 'high');
+                        handleNext();
+                      }}
+                      className="flex-1 py-2.5 bg-emerald-50 hover:bg-emerald-100 active:scale-[0.98] text-emerald-700 font-bold border border-emerald-200 rounded-xl text-[13px] transition-all"
+                    >
+                      🙌 High
+                    </button>
+                  </div>
+                </div>
               </div>
             ) : (
               <button
@@ -816,15 +852,6 @@ function DayPracticeModal({
                 className="w-full py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold rounded-xl text-[13px] transition-colors"
               >
                 Reveal Answer Key & Outline
-              </button>
-            )}
-
-            {revealed && (
-              <button
-                onClick={handleNext}
-                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-[13px] transition-all shadow-sm flex items-center justify-center gap-2"
-              >
-                {isLast ? 'Complete Day Practice ✨' : 'Next Question →'}
               </button>
             )}
           </div>

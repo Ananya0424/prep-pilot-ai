@@ -153,11 +153,16 @@ function generateSmartFallbackResponse(prompt: string, systemPrompt?: string): s
   // Default Questions/Flashcards fallback
   return JSON.stringify({
     questions: [
-      { prompt: 'Explain your experience with full-stack architecture and API design.', category: 'technical', difficulty: 2, requirement_ids: ['r1'] },
-      { prompt: 'How do you optimize performance and manage state in modern web apps?', category: 'technical', difficulty: 2, requirement_ids: ['r2'] },
-      { prompt: 'Describe a situation where you resolved a difficult technical conflict in a team.', category: 'behavioural', difficulty: 2, requirement_ids: ['r4'] },
-      { prompt: 'How would you design a scalable microservice system with high availability?', category: 'system-design', difficulty: 3, requirement_ids: ['r1'] },
-      { prompt: 'Why do you want to join our engineering team and what drives your work?', category: 'company-fit', difficulty: 1, requirement_ids: ['r4'] }
+      { prompt: 'Explain your experience with full-stack architecture and API design in React & Node.', answer_outline: 'Detail component architecture, state management, REST API standards, and middleware handling.', category: 'technical', difficulty: 2, requirement_ids: ['r1'] },
+      { prompt: 'How do you optimize database queries and manage state in modern web applications?', answer_outline: 'Explain database indexing, connection pooling, caching strategies (Redis), and frontend memoization.', category: 'technical', difficulty: 2, requirement_ids: ['r3'] },
+      { prompt: 'How do you design a RAG architecture for enterprise search with LLMs & Vector DBs?', answer_outline: 'Detail document chunking, vector embeddings (Pinecone/Chroma), similarity retrieval, and prompt context building.', category: 'technical', difficulty: 3, requirement_ids: ['r2'] },
+      { prompt: 'How do you ensure web application security against OWASP vulnerabilities (XSS, CSRF, SQLi)?', answer_outline: 'Discuss input sanitization, parameterized queries, CORS policies, JWT authentication, and HTTPS encryption.', category: 'technical', difficulty: 2, requirement_ids: ['r3'] },
+      { prompt: 'How would you architect a high-availability microservice system for millions of requests?', answer_outline: 'Discuss load balancing, stateless API servers, database sharding, horizontal scaling, and circuit breakers.', category: 'system-design', difficulty: 3, requirement_ids: ['r1'] },
+      { prompt: 'How do you design a real-time notification system using WebSockets and Message Queues?', answer_outline: 'Explain WebSocket connections, Redis pub/sub, RabbitMQ/Kafka queues, and fallback polling mechanisms.', category: 'system-design', difficulty: 3, requirement_ids: ['r3'] },
+      { prompt: 'Describe a situation where you resolved a difficult technical disagreement or conflict in a team.', answer_outline: 'Use STAR method: Explain the technical conflict, data-driven compromise, execution, and positive team outcome.', category: 'behavioural', difficulty: 2, requirement_ids: ['r4'] },
+      { prompt: 'How do you prioritize competing engineering tasks under tight project deadlines?', answer_outline: 'Explain MoSCoW prioritization, communicating with stakeholders, MVP delivery, and managing technical debt.', category: 'behavioural', difficulty: 2, requirement_ids: ['r4'] },
+      { prompt: 'Why do you want to join our engineering team and what drives your technical work?', answer_outline: 'Align technical passion, company products, engineering culture, and long-term impact goals.', category: 'company-fit', difficulty: 1, requirement_ids: ['r4'] },
+      { prompt: 'How do you stay updated with emerging technologies like GenAI, AI Agents, and Cloud Architecture?', answer_outline: 'Highlight continuous learning, side projects, open-source contributions, technical blogs, and hands-on experimentation.', category: 'company-fit', difficulty: 1, requirement_ids: ['r2'] }
     ],
     flashcards: [
       { front: 'What is REST API idempotency?', back: 'Idempotent HTTP methods (GET, PUT, DELETE) produce the same result regardless of execution frequency.' },
