@@ -164,12 +164,15 @@ export default function CreateKitPage() {
               </div>
             </div>
           ) : (
-            <form onSubmit={handleGenerate} className="space-y-6">
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
-                  <Briefcase className="w-4 h-4 text-slate-400" />
-                  Job Description
-                </label>
+            <form onSubmit={handleGenerate} className="space-y-0">
+
+              {/* Section 1: Job Description */}
+              <div className="pb-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-indigo-600">01</span>
+                  <span className="text-[13px] font-bold text-slate-800">Job Description</span>
+                  <div className="flex-1 h-px bg-slate-100 ml-1" />
+                </div>
                 <textarea
                   required
                   rows={6}
@@ -180,73 +183,79 @@ export default function CreateKitPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-slate-400" />
-                    Company Website URL
-                  </label>
-                  <input
-                    type="url"
-                    required
-                    value={companyUrl}
-                    onChange={(e) => setCompanyUrl(e.target.value)}
-                    placeholder="https://company.com"
-                    className="w-full px-4 py-3.5 bg-[#F8F9FF] border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-[14px] font-medium focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all"
-                  />
+              {/* Section 2: Company Details */}
+              <div className="pb-6 border-t border-slate-100 pt-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-indigo-600">02</span>
+                  <span className="text-[13px] font-bold text-slate-800">Company & Timeline</span>
+                  <div className="flex-1 h-px bg-slate-100 ml-1" />
                 </div>
-
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-slate-400" />
-                    Days Until Interview
-                  </label>
-                  <div className="relative">
-                     <input
-                      type="number"
-                      min={1}
-                      max={60}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                      Company Website URL
+                    </label>
+                    <input
+                      type="url"
                       required
-                      value={daysAvailable}
-                      onChange={(e) => setDaysAvailable(Number(e.target.value))}
-                      className="w-full pl-4 pr-16 py-3.5 bg-[#F8F9FF] border border-slate-200 rounded-xl text-slate-900 text-[14px] font-medium focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                      value={companyUrl}
+                      onChange={(e) => setCompanyUrl(e.target.value)}
+                      placeholder="https://company.com"
+                      className="w-full px-4 py-3 bg-[#F8F9FF] border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-[14px] font-medium focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 font-medium pointer-events-none">days</span>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                      Days Until Interview
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min={1} max={60} required
+                        value={daysAvailable}
+                        onChange={(e) => setDaysAvailable(Number(e.target.value))}
+                        className="w-full pl-4 pr-14 py-3 bg-[#F8F9FF] border border-slate-200 rounded-xl text-slate-900 text-[14px] font-medium focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                      />
+                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] text-slate-400 font-semibold pointer-events-none">days</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 flex flex-col sm:flex-row sm:items-center gap-4 border-t border-slate-100">
+              {/* Section 3: Generate */}
+              <div className="border-t border-slate-100 pt-6 flex flex-col sm:flex-row sm:items-center gap-4">
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-8 py-3.5 bg-indigo-900 hover:bg-indigo-800 text-white font-bold rounded-xl transition-all duration-300 text-[14px] shadow-sm flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white text-[14px] font-bold rounded-xl transition-all shadow-sm shadow-indigo-600/25 hover:shadow-md hover:shadow-indigo-600/30"
                 >
-                  <span>Generate Prep Kit ✨</span>
+                  <Sparkles className="w-4 h-4" />
+                  Generate Prep Kit
                 </button>
-                <p className="text-[12px] text-slate-500 font-medium max-w-xs">
-                  AI will research the company, analyze requirements, generate questions and create your schedule.
+                <p className="text-[12px] text-slate-400 font-medium max-w-xs leading-relaxed">
+                  AI will research the company, analyze requirements, generate questions and create your study schedule.
                 </p>
               </div>
-            </form>
-          )}
 
-          {/* Bulk Multi-Role Upload Option */}
-          {!generating && (
-            <div className="mt-8 pt-6 border-t border-slate-100">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center space-x-1.5">
-                <Upload className="w-3.5 h-3.5" />
-                <span>Prepare for multiple roles (Bulk Upload JSON)</span>
-              </label>
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleBulkUpload}
-                className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer transition-colors"
-              />
-              {bulkStatus && (
-                <p className="text-xs text-brand-600 mt-3 font-bold bg-brand-50 inline-block px-3 py-1 rounded-md">{bulkStatus}</p>
-              )}
-            </div>
+              {/* Section 4: Bulk Upload */}
+              <div className="border-t border-slate-100 pt-6 mt-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <Upload className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Multiple Roles — Bulk Upload</span>
+                  <div className="flex-1 h-px bg-slate-100 ml-1" />
+                </div>
+                <p className="text-[12px] text-slate-400 mb-3 font-medium">Upload a JSON array of job descriptions to generate multiple kits at once.</p>
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleBulkUpload}
+                  className="text-[12px] text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[12px] file:font-bold file:bg-slate-100 file:text-slate-600 hover:file:bg-slate-200 cursor-pointer transition-colors"
+                />
+                {bulkStatus && (
+                  <p className="mt-2 text-[12px] font-semibold text-indigo-600 bg-indigo-50 inline-block px-3 py-1 rounded-lg">{bulkStatus}</p>
+                )}
+              </div>
+
+            </form>
           )}
         </div>
       </motion.div>
