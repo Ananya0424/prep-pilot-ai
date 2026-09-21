@@ -44,7 +44,17 @@ export default function CreateKitPage() {
         }),
       });
 
-      const data = await res.json();
+      // Safely parse response - server might return HTML on crash
+      let data: any = {};
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        // Extract meaningful error from HTML or plain text
+        const match = text.match(/"([^"]{10,200})"/);
+        throw new Error(match ? match[1] : 'Server error. Please try again in a moment.');
+      }
 
       if (!res.ok) {
         throw new Error(data.error || 'Failed to generate kit');
