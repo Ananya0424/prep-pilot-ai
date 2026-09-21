@@ -80,7 +80,19 @@ export default function DashboardPage() {
   const totalQuestions = savedKits.reduce((a, k) => a + (k.kit?.questions?.length || 0), 0);
   const totalScheduleDays = savedKits.reduce((a, k) => a + (k.kit?.schedule?.days?.length || 0), 0);
   const totalCompletedDays = savedKits.reduce((a, k) => {
-    const doneCount = k.kit?.user_progress?.completed_days?.length || 0;
+    const kitId = k._id || k.id;
+    let doneCount = k.kit?.user_progress?.completed_days?.length || 0;
+
+    // Fallback check in localStorage per-kit key if kit.user_progress not synced
+    if (doneCount === 0 && kitId) {
+      try {
+        const rawDone = localStorage.getItem(`preppilot_kit_schedule_done_${kitId}`);
+        if (rawDone) {
+          const parsed = JSON.parse(rawDone);
+          if (Array.isArray(parsed)) doneCount = parsed.length;
+        }
+      } catch (e) {}
+    }
     return a + doneCount;
   }, 0);
   const topicsCoveredPct = totalScheduleDays > 0 ? Math.round((totalCompletedDays / totalScheduleDays) * 100) : 0;

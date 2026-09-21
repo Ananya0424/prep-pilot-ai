@@ -131,6 +131,22 @@ export default function KitDetailPage() {
     setSaving(true);
     setSaveSuccess(false);
 
+    // Sync to client storage lists immediately for dynamic dashboard stat updates
+    try {
+      sessionStorage.setItem(`kit_${kitId}`, JSON.stringify(targetKit));
+      const rawLocal = localStorage.getItem('preppilot_saved_kits_list');
+      if (rawLocal) {
+        const existing = JSON.parse(rawLocal);
+        const updatedList = existing.map((k: any) => {
+          if ((k._id || k.id) === kitId) {
+            return { ...k, kit: targetKit, updatedAt: new Date().toISOString() };
+          }
+          return k;
+        });
+        localStorage.setItem('preppilot_saved_kits_list', JSON.stringify(updatedList));
+      }
+    } catch (e) {}
+
     try {
       const res = await fetch(`/api/kits/${kitId}`, {
         method: 'PUT',
